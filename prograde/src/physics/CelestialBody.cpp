@@ -67,7 +67,7 @@ Vector3 CelestialBody::getAbsolutePositionAtUT(UniversalTime uT) const
 
 	if(parent != nullptr)
 	{
-		result += getAbsolutePositionFromRelative(
+		result = getAbsolutePositionFromRelative(
 		    parent->getAttachedCoordinateSystemAtUT(uT), result);
 	}
 

@@ -155,7 +155,7 @@ void MainWin::updateScene(BasicCamera& camera)
 	debugText->getModel().scale(1.98f, 3.5f);
 
 	timeSinceTextUpdate += frameTiming;
-	if(timeSinceTextUpdate > 1.0)
+	if(timeSinceTextUpdate > 0.5)
 	{
 		debugText->setText(stream.str().c_str());
 		timeSinceTextUpdate = 0.f;
@@ -185,7 +185,7 @@ std::string MainWin::timeToStr(UniversalTime uT)
 	time -= sec;
 	min = (time / 60) % 60;
 	time -= min * 60;
-	hour = (12 + (time / 3600)) % 24;
+	hour = (/*12 +*/ (time / 3600)) % 24;
 	time -= hour * 3600;
 	day = time / (24 * 3600);
 

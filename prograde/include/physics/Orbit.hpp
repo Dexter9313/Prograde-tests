@@ -60,21 +60,27 @@ class Orbit
 	Orbit(MassiveBodyMass const& massiveBodyMass, Parameters parameters);
 	Orbit(Period const& period, Parameters parameters);
 	Orbit(Orbit const& copiedOrbit) = default;
+	virtual void updateParameters(UniversalTime uT) { (void) uT; };
 	double getMassiveBodyMass() const;
 	Parameters getParameters() const;
 	double getPeriod() const;
-	double getMeanAnomalyAtUT(UniversalTime uT) const;
-	double getEccentricAnomalyAtUT(UniversalTime uT) const;
-	double getTrueAnomalyAtUT(UniversalTime uT) const;
-	double getMassiveBodyDistanceAtUT(UniversalTime uT) const;
-	Vector3 getPositionAtUT(UniversalTime uT) const;
+	virtual double getMeanAnomalyAtUT(UniversalTime uT);
+	double getEccentricAnomalyAtUT(UniversalTime uT);
+	double getTrueAnomalyAtUT(UniversalTime uT);
+	double getMassiveBodyDistanceAtUT(UniversalTime uT);
+	Vector3 getPositionAtUT(UniversalTime uT);
 	// Vector3 getVelocityAtUT(UniversalTime uT) const;
-	CoordinateSystem getRelativeCoordinateSystemAtUT(UniversalTime uT) const;
+	CoordinateSystem getRelativeCoordinateSystemAtUT(UniversalTime uT);
 	std::ostream& displayAsText(std::ostream& stream) const;
+	virtual ~Orbit(){};
+
+  protected:
+	void updatePeriod();
+
+	Parameters parameters;
 
   private:
 	double massiveBodyMass;
-	Parameters parameters;
 
 	// period is precomputed as it is often used and doesn't change
 	double period;

@@ -17,7 +17,7 @@
 */
 #include "graphics/renderers/OrbitalSystemRenderer.hpp"
 
-OrbitalSystemRenderer::OrbitalSystemRenderer(OrbitalSystem const* drawnSystem)
+OrbitalSystemRenderer::OrbitalSystemRenderer(OrbitalSystem* drawnSystem)
     : drawnSystem(drawnSystem)
     , billboard("data/prograde/images/star.png")
 {

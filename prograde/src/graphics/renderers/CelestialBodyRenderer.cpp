@@ -17,7 +17,7 @@
 */
 #include "../../../include/graphics/renderers/CelestialBodyRenderer.hpp"
 
-CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody const* drawnBody,
+CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
                                              std::string const& name)
     : drawnBody(drawnBody)
     , planet(1.f)

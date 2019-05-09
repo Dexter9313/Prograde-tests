@@ -32,8 +32,7 @@
 class CelestialBodyRenderer //: public Renderer
 {
   public:
-	CelestialBodyRenderer(CelestialBody const* drawnBody,
-	                      std::string const& name);
+	CelestialBodyRenderer(CelestialBody* drawnBody, std::string const& name);
 	void updateMesh(UniversalTime uT, Vector3 const& cameraPos);
 	void render();
 	CelestialBody const* getDrawnBody() const { return drawnBody; };
@@ -44,7 +43,7 @@ class CelestialBodyRenderer //: public Renderer
 	~CelestialBodyRenderer();
 
   private:
-	CelestialBody const* drawnBody;
+	CelestialBody* drawnBody;
 	float centerPosition;
 	int shaderParametersId;
 

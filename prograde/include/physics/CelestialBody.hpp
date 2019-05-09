@@ -22,6 +22,7 @@
 #include <cmath>
 #include <vector>
 
+#include "CSVOrbit.hpp"
 #include "Color.hpp"
 #include "Orbit.hpp"
 
@@ -41,9 +42,9 @@ class CelestialBody
 		double mass;
 		double radius;
 		Color color;
-		float atmosphere = 0.0;
-		float innerRing  = 0.0;
-		float outerRing  = 0.0;
+		float atmosphere = 0.f;
+		float innerRing  = 0.f;
+		float outerRing  = 0.f;
 	};
 
 	CelestialBody(double influentBodyMass, Orbit::Parameters orbitalParams,
@@ -51,11 +52,18 @@ class CelestialBody
 	CelestialBody(CelestialBody const& parent,
 	              Orbit::Parameters const& orbitalParams,
 	              Parameters physicalParams);
+	CelestialBody(double influentBodyMass, std::string const& ownName,
+	              Parameters physicalParams);
+	CelestialBody(CelestialBody const* parent, std::string const& ownName,
+	              Parameters physicalParams);
 	CelestialBody(CelestialBody const& copiedBody) = default;
 	CelestialBody const* getParent() const;
 	CelestialBody* createChild(Orbit::Parameters const& orbitalParams,
 	                           Parameters const& physicalParams);
+	CelestialBody* createChild(std::string const& childName,
+	                           Parameters const& physicalParams);
 	Orbit const* getOrbit() const;
+	Orbit* getOrbit();
 	Parameters getParameters() const;
 	Vector3 getAbsolutePositionAtUT(UniversalTime uT) const;
 	Vector3 getAbsoluteVelocityAtUT(UniversalTime uT) const;
@@ -65,7 +73,7 @@ class CelestialBody
   private:
 	CelestialBody const* parent;
 	std::vector<CelestialBody*> children;
-	Orbit orbit;
+	Orbit* orbit;
 	Parameters parameters;
 };
 

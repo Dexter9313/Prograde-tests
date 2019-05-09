@@ -58,8 +58,22 @@ class MainWin : public AbstractMainWin
 	// OrbitalSystem* orbitalSystem = new KerbalSystem;
 	OrbitalSystem* orbitalSystem = new SolarSystem;
 	OrbitalSystemRenderer* systemRenderer;
+
 	// SimulationTime clock = SimulationTime(0);
-	SimulationTime clock = SimulationTime(1443394800 - 946728000);
+
+	SimulationTime clock = SimulationTime(496666800);
+
+	// SimulationTime clock = SimulationTime(610595100); // MOON + MARS
+	// ALIGNMENT
+
+	// SimulationTime clock = SimulationTime(1748424); // "PERFECT" FULL MOON
+
+	// SimulationTime clock = SimulationTime(675343080); // LUNAR ECLIPSE
+
+	// SimulationTime clock = SimulationTime(615401700); // SOLAR ECLIPSE IN
+	// SOUTH AMERICA
+
+	// SimulationTime clock = SimulationTime(6852600); // March equinox
 };
 
 #endif // MAINWIN_H

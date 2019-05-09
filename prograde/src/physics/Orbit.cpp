@@ -20,26 +20,16 @@
 
 Orbit::Orbit(MassiveBodyMass const& massiveBodyMass,
              Orbit::Parameters parameters)
-    : massiveBodyMass(massiveBodyMass.value)
-    , parameters(parameters)
+    : parameters(parameters)
+    , massiveBodyMass(massiveBodyMass.value)
 {
-	double smaCubed = parameters.semiMajorAxis * parameters.semiMajorAxis
-	                  * parameters.semiMajorAxis;
-	double mu = constant::G * massiveBodyMass.value;
-	if(parameters.eccentricity < 1)
-	{
-		period = 2 * constant::pi * sqrt(smaCubed / mu);
-	}
-	else
-	{
-		period = constant::NaN;
-	}
+	updatePeriod();
 }
 
 // TODO(florian) compute correctly
 Orbit::Orbit(Period const& period, Orbit::Parameters parameters)
-    : massiveBodyMass(period.value)
-    , parameters(parameters)
+    : parameters(parameters)
+    , massiveBodyMass(period.value)
 {
 	double smaCubed = parameters.semiMajorAxis * parameters.semiMajorAxis
 	                  * parameters.semiMajorAxis;
@@ -69,7 +59,7 @@ double Orbit::getPeriod() const
 	return period;
 }
 
-double Orbit::getMeanAnomalyAtUT(UniversalTime uT) const
+double Orbit::getMeanAnomalyAtUT(UniversalTime uT)
 {
 	// TODO(florian) : test assertion
 	// to return a sensible meanAnomaly (we don't care about returning > 2*M_PI
@@ -91,7 +81,7 @@ double Orbit::getMeanAnomalyAtUT(UniversalTime uT) const
 	return (n * equivUT) + parameters.meanAnomalyAtEpoch;
 }
 
-double Orbit::getEccentricAnomalyAtUT(UniversalTime uT) const
+double Orbit::getEccentricAnomalyAtUT(UniversalTime uT)
 {
 	if(parameters.eccentricity < 1)
 	{
@@ -108,7 +98,7 @@ double Orbit::getEccentricAnomalyAtUT(UniversalTime uT) const
 	    getMeanAnomalyAtUT(uT), parameters.eccentricity);
 }
 
-double Orbit::getTrueAnomalyAtUT(UniversalTime uT) const
+double Orbit::getTrueAnomalyAtUT(UniversalTime uT)
 {
 	if(parameters.eccentricity < 1)
 	{
@@ -131,7 +121,7 @@ double Orbit::getTrueAnomalyAtUT(UniversalTime uT) const
 	return 2.0 * atan(coeff * tan(eccentricAnomaly) / 2.0);
 }
 
-double Orbit::getMassiveBodyDistanceAtUT(UniversalTime uT) const
+double Orbit::getMassiveBodyDistanceAtUT(UniversalTime uT)
 {
 	// TODO(florian) : solve situation for parabola
 	double e(parameters.eccentricity);
@@ -146,7 +136,7 @@ double Orbit::getMassiveBodyDistanceAtUT(UniversalTime uT) const
 	return 2.0 * a / (1.0 + cos(t));
 }
 
-Vector3 Orbit::getPositionAtUT(UniversalTime uT) const
+Vector3 Orbit::getPositionAtUT(UniversalTime uT)
 {
 	double distance(getMassiveBodyDistanceAtUT(uT)),
 	    trueAnomaly(getTrueAnomalyAtUT(uT));
@@ -165,12 +155,13 @@ Vector3 Orbit::getPositionAtUT(UniversalTime uT) const
     return Vector;
 }*/
 
-CoordinateSystem Orbit::getRelativeCoordinateSystemAtUT(UniversalTime uT) const
+CoordinateSystem Orbit::getRelativeCoordinateSystemAtUT(UniversalTime uT)
 {
 	CoordinateSystem result;
 	result.setOrigin(getPositionAtUT(uT));
 	result.rotateAlongX(parameters.inclination);
 	result.rotateAlongZ(parameters.ascendingNodeLongitude);
+
 	return result;
 }
 
@@ -191,6 +182,21 @@ std::ostream& Orbit::displayAsText(std::ostream& stream) const
 	std::cout << period << std::endl;
 
 	return stream;
+}
+
+void Orbit::updatePeriod()
+{
+	double smaCubed = parameters.semiMajorAxis * parameters.semiMajorAxis
+	                  * parameters.semiMajorAxis;
+	double mu = constant::G * massiveBodyMass;
+	if(parameters.eccentricity < 1)
+	{
+		period = 2 * constant::pi * sqrt(smaCubed / mu);
+	}
+	else
+	{
+		period = constant::NaN;
+	}
 }
 
 std::ostream& operator<<(std::ostream& stream, Orbit const& orbit)

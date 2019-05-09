@@ -29,13 +29,13 @@
 class OrbitalSystemRenderer //: public Renderer
 {
   public:
-	OrbitalSystemRenderer(OrbitalSystem const* drawnSystem);
+	OrbitalSystemRenderer(OrbitalSystem* drawnSystem);
 	void updateMesh(UniversalTime uT, Vector3 const& cameraPos);
 	void render(BasicCamera const& camera);
 	~OrbitalSystemRenderer();
 
   private:
-	OrbitalSystem const* drawnSystem;
+	OrbitalSystem* drawnSystem;
 	std::vector<CelestialBodyRenderer*> bodyRenderers;
 
 	std::map<double, CelestialBodyRenderer*> sortedRenderers;

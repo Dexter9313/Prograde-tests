@@ -41,6 +41,21 @@ void OrbitalSystem::createChild(
 	}
 }
 
+void OrbitalSystem::createChild(
+    std::string const& name,
+    CelestialBody::Parameters const& physicalParameters,
+    std::string const& parent)
+{
+	if(!parent.empty())
+	{
+		bodies[name] = bodies[parent]->createChild(name, physicalParameters);
+	}
+	else
+	{
+		bodies[name] = new CelestialBody(centralMass, name, physicalParameters);
+	}
+}
+
 CelestialBody* OrbitalSystem::operator[](std::string const& name)
 {
 	return bodies[name];

@@ -22,7 +22,7 @@ CelestialBody::CelestialBody(double influentBodyMass,
                              Orbit::Parameters orbitalParams,
                              Parameters physicalParams)
     : parent(nullptr)
-    , orbit(Orbit(Orbit::MassiveBodyMass(influentBodyMass), orbitalParams))
+    , orbit(new Orbit(Orbit::MassiveBodyMass(influentBodyMass), orbitalParams))
     , parameters(std::move(physicalParams))
 {
 }
@@ -31,8 +31,27 @@ CelestialBody::CelestialBody(CelestialBody const& parent,
                              Orbit::Parameters const& orbitalParams,
                              Parameters physicalParams)
     : parent(&parent)
-    , orbit(Orbit(Orbit::MassiveBodyMass(parent.getParameters().mass),
-                  orbitalParams))
+    , orbit(new Orbit(Orbit::MassiveBodyMass(parent.getParameters().mass),
+                      orbitalParams))
+    , parameters(std::move(physicalParams))
+{
+}
+
+CelestialBody::CelestialBody(double influentBodyMass,
+                             std::string const& ownName,
+                             Parameters physicalParams)
+    : parent(nullptr)
+    , orbit(new CSVOrbit(Orbit::MassiveBodyMass(influentBodyMass), ownName))
+    , parameters(std::move(physicalParams))
+{
+}
+
+CelestialBody::CelestialBody(CelestialBody const* parent,
+                             std::string const& ownName,
+                             Parameters physicalParams)
+    : parent(parent)
+    , orbit(new CSVOrbit(Orbit::MassiveBodyMass(parent->getParameters().mass),
+                         ownName))
     , parameters(std::move(physicalParams))
 {
 }
@@ -51,9 +70,22 @@ CelestialBody*
 	return newChild;
 }
 
+CelestialBody* CelestialBody::createChild(std::string const& childName,
+                                          Parameters const& physicalParams)
+{
+	auto newChild = new CelestialBody(this, childName, physicalParams);
+	children.push_back(newChild);
+	return newChild;
+}
+
 Orbit const* CelestialBody::getOrbit() const
 {
-	return &orbit;
+	return orbit;
+}
+
+Orbit* CelestialBody::getOrbit()
+{
+	return orbit;
 }
 
 CelestialBody::Parameters CelestialBody::getParameters() const
@@ -63,12 +95,14 @@ CelestialBody::Parameters CelestialBody::getParameters() const
 
 Vector3 CelestialBody::getAbsolutePositionAtUT(UniversalTime uT) const
 {
-	Vector3 result(orbit.getPositionAtUT(uT));
+	Vector3 result(orbit->getPositionAtUT(uT));
 
 	if(parent != nullptr)
 	{
-		result = getAbsolutePositionFromRelative(
-		    parent->getAttachedCoordinateSystemAtUT(uT), result);
+		// At least works for JPL Horizon Data
+		result += parent->getAbsolutePositionAtUT(uT);
+		/*result = getAbsolutePositionFromRelative(
+		    parent->getAttachedCoordinateSystemAtUT(uT), result);*/
 	}
 
 	return result;
@@ -77,7 +111,7 @@ Vector3 CelestialBody::getAbsolutePositionAtUT(UniversalTime uT) const
 CoordinateSystem
     CelestialBody::getAttachedCoordinateSystemAtUT(UniversalTime uT) const
 {
-	return orbit.getRelativeCoordinateSystemAtUT(uT);
+	return orbit->getRelativeCoordinateSystemAtUT(uT);
 }
 
 CelestialBody::~CelestialBody()
@@ -86,4 +120,5 @@ CelestialBody::~CelestialBody()
 	{
 		delete child;
 	}
+	delete orbit;
 }

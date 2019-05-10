@@ -46,12 +46,12 @@ CSVOrbit::CSVOrbit(MassiveBodyMass const& massiveBodyMass,
 			    = QString(file.readLine()).simplified().split(',');
 
 			parametersHistory[entry[0].toDouble()] = Parameters({
-			    entry[1].toDouble(),
-			    entry[2].toDouble(),
-			    entry[3].toDouble(),
-			    entry[4].toDouble(),
-			    entry[5].toDouble(),
-			    entry[6].toDouble(),
+			    static_cast<float>(entry[1].toDouble()),
+			    static_cast<float>(entry[2].toDouble()),
+			    static_cast<float>(entry[3].toDouble()),
+			    static_cast<float>(entry[4].toDouble()),
+			    static_cast<float>(entry[5].toDouble()),
+			    static_cast<float>(entry[6].toDouble()),
 			});
 		}
 	}

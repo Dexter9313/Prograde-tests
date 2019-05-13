@@ -175,6 +175,21 @@ MainWin::~MainWin()
 	delete orbitalSystem;
 }
 
+UniversalTime MainWin::loadStartUT()
+{
+	QDateTime startDateTime(
+	    QSettings().value("simulation/starttime").value<QDateTime>());
+
+	UniversalTime result(startDateTime.date().toJulianDay() - 2451545.0);
+	result *= 24 * 3600;
+	QTime t(startDateTime.toLocalTime().time());
+	result += t.hour() * 3600.0;
+	result += t.minute() * 60.0;
+	result += t.second();
+
+	return result;
+}
+
 #include <cmath>
 std::string MainWin::timeToStr(UniversalTime uT)
 {

@@ -16,19 +16,9 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef LAUNCHER_h
-#define LAUNCHER_h
+#include "Launcher.hpp"
 
-#include "BaseLauncher.hpp"
-#include "ProgradeSettings.hpp"
-
-class Launcher : public BaseLauncher
+SettingsWidget* Launcher::newSettingsWidget()
 {
-  public:
-	Launcher() = default;
-
-  protected:
-	virtual SettingsWidget* newSettingsWidget() override;
-};
-
-#endif // LAUNCHER_h
+	return new ProgradeSettings(this);
+}

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2019 Florian Cabot <florian.cabot@hotmail.fr>
+    Copyright (C) 2019 Florian Cabot <florian.cabot@epfl.ch>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,19 +16,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef LAUNCHER_h
-#define LAUNCHER_h
-
-#include "BaseLauncher.hpp"
 #include "ProgradeSettings.hpp"
 
-class Launcher : public BaseLauncher
+ProgradeSettings::ProgradeSettings(QWidget* parent)
+    : SettingsWidget(parent)
 {
-  public:
-	Launcher() = default;
+	insertGroup("simulation", tr("Simulation"), 0);
+	addDateTimeSetting("starttime", QDateTime().currentDateTimeUtc(),
+	                   tr("Start time (UTC)"));
 
-  protected:
-	virtual SettingsWidget* newSettingsWidget() override;
-};
-
-#endif // LAUNCHER_h
+	setCurrentIndex(0);
+}

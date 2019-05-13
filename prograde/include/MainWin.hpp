@@ -1,6 +1,8 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
+#include <QDateTime>
+
 #include "AbstractMainWin.hpp"
 
 #include "Camera.hpp"
@@ -50,6 +52,7 @@ class MainWin : public AbstractMainWin
 	Text3D* debugText;
 	float timeSinceTextUpdate = FLT_MAX;
 
+	static UniversalTime loadStartUT();
 	static std::string timeToStr(UniversalTime uT);
 	static void computeDayMonth(unsigned int* day, unsigned int* month,
 	                            bool bissextile);
@@ -61,7 +64,7 @@ class MainWin : public AbstractMainWin
 
 	// SimulationTime clock = SimulationTime(0);
 
-	SimulationTime clock = SimulationTime(496666800);
+	// SimulationTime clock = SimulationTime(496666800);
 
 	// SimulationTime clock = SimulationTime(610595100); // MOON + MARS
 	// ALIGNMENT
@@ -74,6 +77,8 @@ class MainWin : public AbstractMainWin
 	// SOUTH AMERICA
 
 	// SimulationTime clock = SimulationTime(6852600); // March equinox
+
+	SimulationTime clock = SimulationTime(loadStartUT());
 };
 
 #endif // MAINWIN_H

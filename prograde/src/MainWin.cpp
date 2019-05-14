@@ -10,12 +10,26 @@ void MainWin::keyPressEvent(QKeyEvent* e)
 	auto cam(dynamic_cast<Camera*>(&getCamera()));
 	if(e->key() == Qt::Key_Tab)
 	{
-		bodyTracked++;
 		std::vector<CelestialBody*> bodies(
 		    orbitalSystem->getAllCelestialBodiesPointers());
+		bodyTracked++;
 		if(bodyTracked == bodies.size())
 		{
 			bodyTracked = 0;
+		}
+		cam->target = bodies[bodyTracked];
+	}
+	else if(e->key() == Qt::Key_Backtab)
+	{
+		std::vector<CelestialBody*> bodies(
+		    orbitalSystem->getAllCelestialBodiesPointers());
+		if(bodyTracked > 0)
+		{
+			bodyTracked--;
+		}
+		else
+		{
+			bodyTracked = bodies.size() - 1;
 		}
 		cam->target = bodies[bodyTracked];
 	}

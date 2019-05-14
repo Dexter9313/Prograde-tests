@@ -112,7 +112,6 @@ void CSVOrbit::updateParameters(UniversalTime uT)
 			    p1.meanAnomalyAtEpoch, p2.meanAnomalyAtEpoch, frac);
 		}
 
-
 		if(getPeriod() < end - beg)
 		{
 			parameters.meanAnomalyAtEpoch = static_cast<double>(

@@ -46,12 +46,12 @@ CSVOrbit::CSVOrbit(MassiveBodyMass const& massiveBodyMass,
 			    = QString(file.readLine()).simplified().split(',');
 
 			parametersHistory[entry[0].toDouble()] = Parameters({
-			    static_cast<float>(entry[1].toDouble()),
-			    static_cast<float>(entry[2].toDouble()),
-			    static_cast<float>(entry[3].toDouble()),
-			    static_cast<float>(entry[4].toDouble()),
-			    static_cast<float>(entry[5].toDouble()),
-			    static_cast<float>(entry[6].toDouble()),
+			    entry[1].toDouble(),
+			    entry[2].toDouble(),
+			    entry[3].toDouble(),
+			    entry[4].toDouble(),
+			    entry[5].toDouble(),
+			    entry[6].toDouble(),
 			});
 		}
 	}
@@ -74,11 +74,13 @@ void CSVOrbit::updateParameters(UniversalTime uT)
 	{
 		parameters                    = it2->second;
 		parameters.meanAnomalyAtEpoch = parametersHistory[0].meanAnomalyAtEpoch;
+		updatePeriod();
 	}
 	else if(it2 == parametersHistory.end())
 	{
 		parameters                    = it1->second;
 		parameters.meanAnomalyAtEpoch = parametersHistory[0].meanAnomalyAtEpoch;
+		updatePeriod();
 	}
 	else
 	{
@@ -96,14 +98,53 @@ void CSVOrbit::updateParameters(UniversalTime uT)
 		    = (1.0 - frac) * p1.eccentricity + frac * p2.eccentricity;
 		parameters.semiMajorAxis
 		    = (1.0 - frac) * p1.semiMajorAxis + frac * p2.semiMajorAxis;
-		parameters.meanAnomalyAtEpoch = interpolateAngle(
-		    p1.meanAnomalyAtEpoch, p2.meanAnomalyAtEpoch, frac);
-	}
 
-	updatePeriod();
+		updatePeriod();
+
+		if(2.0 * (end - beg) < getPeriod())
+		{
+			parameters.meanAnomalyAtEpoch = interpolateAngle(
+			    p1.meanAnomalyAtEpoch, p2.meanAnomalyAtEpoch, frac);
+		}
+		else
+		{
+			parameters.meanAnomalyAtEpoch = interpolateAngleAlwaysForward(
+			    p1.meanAnomalyAtEpoch, p2.meanAnomalyAtEpoch, frac);
+		}
+
+
+		if(getPeriod() < end - beg)
+		{
+			parameters.meanAnomalyAtEpoch = static_cast<double>(
+			    p1.meanAnomalyAtEpoch
+			    + 2.0 * constant::pi * (frac * (end - beg)) / getPeriod());
+
+			parameters.meanAnomalyAtEpoch
+			    -= floor(parameters.meanAnomalyAtEpoch / (2.0 * constant::pi))
+			       * 2.0 * constant::pi;
+
+			double MAatEnd(p2.meanAnomalyAtEpoch);
+			double MAcomputed(static_cast<double>(
+			    p1.meanAnomalyAtEpoch
+			    + 2.0 * constant::pi * (end - beg) / getPeriod()));
+
+			while(MAatEnd < MAcomputed)
+			{
+				MAatEnd += 2.0 * constant::pi;
+			}
+
+			double error(MAatEnd - MAcomputed);
+			error -= round(error / (2.0 * constant::pi)) * 2.0 * constant::pi;
+
+			parameters.meanAnomalyAtEpoch += frac * error;
+			parameters.meanAnomalyAtEpoch
+			    -= floor(parameters.meanAnomalyAtEpoch / (2.0 * constant::pi))
+			       * 2.0 * constant::pi;
+		}
+	}
 }
 
-float CSVOrbit::interpolateAngle(float before, float after, float frac)
+double CSVOrbit::interpolateAngle(double before, double after, double frac)
 {
 	while(fabs(after - before) > 3.1416)
 	{
@@ -115,6 +156,17 @@ float CSVOrbit::interpolateAngle(float before, float after, float frac)
 		{
 			before += 2.0 * constant::pi;
 		}
+	}
+
+	return (1.0 - frac) * before + frac * after;
+}
+
+double CSVOrbit::interpolateAngleAlwaysForward(double before, double after,
+                                               double frac)
+{
+	if(after < before)
+	{
+		after += 2.0 * constant::pi;
 	}
 
 	return (1.0 - frac) * before + frac * after;

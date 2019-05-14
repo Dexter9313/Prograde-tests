@@ -33,12 +33,12 @@ class Orbit
   public:
 	struct Parameters
 	{
-		float inclination;
-		float ascendingNodeLongitude;
-		float periapsisArgument;
-		float eccentricity;
-		float semiMajorAxis; // or altitude of periapsis if parabolic orbit
-		float meanAnomalyAtEpoch;
+		double inclination;
+		double ascendingNodeLongitude;
+		double periapsisArgument;
+		double eccentricity;
+		double semiMajorAxis; // or altitude of periapsis if parabolic orbit
+		double meanAnomalyAtEpoch;
 	};
 
 	struct MassiveBodyMass

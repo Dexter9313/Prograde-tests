@@ -38,7 +38,9 @@ class CSVOrbit : public Orbit
 	};
 
   private:
-	static float interpolateAngle(float before, float after, float frac);
+	static double interpolateAngle(double before, double after, double frac);
+	static double interpolateAngleAlwaysForward(double before, double after,
+	                                            double frac);
 
 	std::map<uint64_t, Orbit::Parameters> parametersHistory;
 };

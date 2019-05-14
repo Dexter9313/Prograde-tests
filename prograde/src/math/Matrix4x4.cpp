@@ -232,7 +232,7 @@ Vector3 operator*(Matrix4x4 const& matrix, Vector3 const& vector)
 {
 	Vector3 result(vector);
 
-	for(unsigned int i(0); i < 2; ++i)
+	for(unsigned int i(0); i < 3; ++i)
 	{
 		result[i] = matrix[i][0] * vector[0] + matrix[i][1] * vector[1]
 		            + matrix[i][2] * vector[2];

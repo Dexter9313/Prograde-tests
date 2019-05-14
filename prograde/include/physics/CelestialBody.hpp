@@ -45,6 +45,14 @@ class CelestialBody
 		float atmosphere = 0.f;
 		float innerRing  = 0.f;
 		float outerRing  = 0.f;
+
+		/* ROTATION */
+		float siderealTimeAtEpoch = 0.f; // angle between FP of Aries and Prime
+		                                 // Meridian in radians
+		float siderealRotationPeriod = FLT_MAX; // in seconds
+
+		float northPoleRightAsc    = 0.f;                // in rad
+		float northPoleDeclination = constant::pi / 2.0; // in rad
 	};
 
 	CelestialBody(double influentBodyMass, Orbit::Parameters orbitalParams,
@@ -68,6 +76,7 @@ class CelestialBody
 	Vector3 getAbsolutePositionAtUT(UniversalTime uT) const;
 	Vector3 getAbsoluteVelocityAtUT(UniversalTime uT) const;
 	CoordinateSystem getAttachedCoordinateSystemAtUT(UniversalTime uT) const;
+	float getPrimeMeridianSiderealTimeAtUT(UniversalTime uT) const;
 	virtual ~CelestialBody();
 
   private:

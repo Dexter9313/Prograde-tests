@@ -237,19 +237,22 @@ void Planet::updateRing()
 	GLHandler::deleteShader(shader);
 }
 
-void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos)
+void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
+                          QMatrix4x4 const& properRotation)
 {
 	QMatrix4x4 model;
 
 	model.translate(pos);
 	model.scale(radius);
 
-	renderPlanet(model, lightpos);
+	renderPlanet(model, lightpos, properRotation);
 }
 
-void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos)
+void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
+                          QMatrix4x4 const& properRotation)
 {
 	GLHandler::setShaderParam(shader, "lightpos", lightpos);
+	GLHandler::setShaderParam(shader, "properRotation", properRotation);
 
 	if(!normal)
 	{
@@ -266,7 +269,8 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos)
 	GLHandler::render(mesh);
 }
 
-void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos)
+void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos,
+                         QMatrix4x4 const& properRotation)
 {
 	if(!rings)
 	{
@@ -275,10 +279,11 @@ void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos)
 	QMatrix4x4 ringsModel;
 	ringsModel.translate(pos);
 
-	renderRings(ringsModel, lightpos);
+	renderRings(ringsModel, lightpos, properRotation);
 }
 
-void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos)
+void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
+                         QMatrix4x4 const& properRotation)
 {
 	if(!rings)
 	{
@@ -286,6 +291,7 @@ void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos)
 	}
 
 	GLHandler::setShaderParam(ringShader, "lightpos", lightpos);
+	GLHandler::setShaderParam(ringShader, "properRotation", properRotation);
 	GLHandler::beginTransparent();
 	GLHandler::setUpRender(ringShader, model);
 	if(!ringTextured)

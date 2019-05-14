@@ -23,6 +23,8 @@
 #include "GLHandler.hpp"
 #include "Primitives.hpp"
 
+#include "math/constants.hpp"
+
 class Planet
 {
   public:
@@ -39,10 +41,14 @@ class Planet
 	void initRing(float innerRing, float outerRing,
 	              QString const& texturePath = "");
 	void updateRing();
-	void renderPlanet(QVector3D const& pos, QVector3D const& lightpos);
-	void renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos);
-	void renderRings(QVector3D const& pos, QVector3D const& lightpos);
-	void renderRings(QMatrix4x4 const& model, QVector3D const& lightpos);
+	void renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
+	                  QMatrix4x4 const& properRotation);
+	void renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
+	                  QMatrix4x4 const& properRotation);
+	void renderRings(QVector3D const& pos, QVector3D const& lightpos,
+	                 QMatrix4x4 const& properRotation);
+	void renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
+	                 QMatrix4x4 const& properRotation);
 	~Planet();
 
   private:

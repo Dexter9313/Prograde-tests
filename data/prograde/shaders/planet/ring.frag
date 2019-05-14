@@ -1,6 +1,7 @@
 #version 150 core
 
 in vec2 f_position;
+in mat4 f_invrot;
 
 uniform sampler2D tex;
 
@@ -20,7 +21,8 @@ void main()
 	float alt      = length(f_position);
 	float texCoord = (alt - inner) / (outer - inner);
 
-	vec3 lightdir = normalize(lightpos - vec3(f_position, 0.0));
+	vec3 lightdir = normalize((f_invrot * vec4(lightpos, 1.0)).xyz
+	                          - vec3(f_position, 0.0));
 
 	vec3 closestPoint = dot(lightdir, -1 * vec3(f_position, 0.0)) * lightdir
 	                    + vec3(f_position, 0.0);

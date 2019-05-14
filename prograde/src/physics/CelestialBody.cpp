@@ -114,6 +114,16 @@ CoordinateSystem
 	return orbit->getRelativeCoordinateSystemAtUT(uT);
 }
 
+float CelestialBody::getPrimeMeridianSiderealTimeAtUT(UniversalTime uT) const
+{
+	uT -= round(uT / parameters.siderealRotationPeriod)
+	      * UniversalTime(parameters.siderealRotationPeriod);
+
+	return static_cast<float>(parameters.siderealTimeAtEpoch
+	                          + 2.0 * constant::pi * uT
+	                                / parameters.siderealRotationPeriod);
+}
+
 CelestialBody::~CelestialBody()
 {
 	for(CelestialBody* child : children)

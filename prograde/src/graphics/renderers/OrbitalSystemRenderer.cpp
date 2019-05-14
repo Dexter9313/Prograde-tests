@@ -93,10 +93,19 @@ void OrbitalSystemRenderer::updateMesh(UniversalTime uT,
 
 void OrbitalSystemRenderer::render(BasicCamera const& camera)
 {
+	// /!\ Sun will Always be behind !
 	billboard.render(camera);
-	for(auto bodyRenderer : bodyRenderers)
+	/*for(auto bodyRenderer : bodyRenderers)
 	{
-		bodyRenderer->render();
+	    bodyRenderer->render();
+	}*/
+
+	auto it(sortedRenderers.end());
+	while(it != sortedRenderers.begin())
+	{
+		--it;
+		GLHandler::clearDepthBuffer();
+		it->second->render();
 	}
 }
 

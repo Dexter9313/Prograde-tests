@@ -1,6 +1,7 @@
 #version 150 core
 
 in vec3 f_position;
+in mat4 f_invrot;
 
 uniform samplerCube diff;
 uniform samplerCube norm;
@@ -30,14 +31,15 @@ void main()
 	// avoids lighting stuff behind the planet
 	// float coeff_pos = normalize(ceil(dot(normalize(lightpos),
 	// normalize(f_position)) + 0.3));
-	float coeff_pos      = dot(normalize(lightpos), normalize(f_position));
+	float coeff_pos      = dot(normalize((f_invrot * vec4(lightpos, 1.0)).xyz),
+                          normalize(f_position));
 	float atmosColorGrad = coeff_pos * 0.5 + 0.5;
 
 	// Fully empirical eye-balled algorithm, FAR from accurate, no actual
 	// scattering computed at all...
 	// Fast as heck though
 	float atmoscoeff = clamp(atmosphere * (1.0 - coeff_pos), 0.0, 1.0);
-	vec3 atmosCol = vec3(0.0);
+	vec3 atmosCol    = vec3(0.0);
 	if(atmosColorGrad > minR && atmosColorGrad < maxR)
 	{
 		atmosCol.r
@@ -64,7 +66,8 @@ void main()
 
 	coeff_pos = min(1.0, max(0.0, coeff_pos + 0.1) * 10.0);
 
-	float coeff = max(0.0, dot(normalize(lightpos), normal));
+	float coeff = max(
+	    0.0, dot(normalize((f_invrot * vec4(lightpos, 1.0)).xyz), normal));
 
 	outColor = diffuse;
 	outColor.rgb *= coeff * coeff_pos;

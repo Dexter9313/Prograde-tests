@@ -54,6 +54,11 @@ class CelestialBodyRenderer //: public Renderer
 
 	Planet planet;
 	QVector3D lightpos;
+	QMatrix4x4 baseRotation;   // only align axis, no sideral time
+	QMatrix4x4 properRotation; // full rotation, sideral time included
+
+	// TEMP
+	float declinationTilt = 23.4392811 * constant::pi / 180.0;
 };
 
 #endif // CELESTIALBODYDRAWER_HPP

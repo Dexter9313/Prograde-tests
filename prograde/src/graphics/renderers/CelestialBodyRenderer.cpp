@@ -81,6 +81,8 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
 		planet.initTerrestrial(Utils::toQt(drawnBody->getParameters().color));
 	}
 
+	// RINGS
+
 	float outerRing(drawnBody->getParameters().outerRing);
 	if(drawnBody->getParameters().outerRing != 0.f)
 	{
@@ -108,6 +110,28 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
 			                drawnBody->getParameters().outerRing / radius);
 		}
 	}
+
+	// ROTATION
+
+	Vector3 x(1.0, 0.0, 0.0), y(0.0, 1.0, 0.0);
+	x.rotateAlongZ(drawnBody->getParameters().northPoleRightAsc);
+	y.rotateAlongZ(drawnBody->getParameters().northPoleRightAsc);
+	Vector3 planetLocalZ // north pole
+	    = Matrix4x4(drawnBody->getParameters().northPoleDeclination, -1.0 * y)
+	      * x;
+
+	planetLocalZ.rotateAlongX(-1.f * declinationTilt);
+	planetLocalZ = planetLocalZ.getUnitForm();
+
+	Vector3 planetLocalY(
+	    crossProduct(planetLocalZ, Vector3(1.0, 0.0, 0.0)).getUnitForm());
+	Vector3 planetLocalX(
+	    crossProduct(planetLocalY, planetLocalZ).getUnitForm());
+
+	baseRotation = QMatrix4x4(
+	    planetLocalX[0], planetLocalY[0], planetLocalZ[0], 0.f, planetLocalX[1],
+	    planetLocalY[1], planetLocalZ[1], 0.f, planetLocalX[2], planetLocalY[2],
+	    planetLocalZ[2], 0.f, 0.f, 0.f, 0.f, 1.f);
 }
 
 void CelestialBodyRenderer::updateMesh(UniversalTime uT,
@@ -135,14 +159,23 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT,
 	   Utils::toQt(bodyCenter)); GLHandler::setShaderParam(shader,
 	   "centralBodyCenter", Utils::toQt(centralBodyCenter));
 	*/
+
+	float siderealTime
+	    = drawnBody->getPrimeMeridianSiderealTimeAtUT(uT) + constant::pi;
+
+	QMatrix4x4 sideralRotation;
+	sideralRotation.rotate(siderealTime * 180.f / constant::pi,
+	                       QVector3D(0.f, 0.f, 1.f));
+
+	properRotation = baseRotation * sideralRotation;
 }
 
 void CelestialBodyRenderer::render()
 {
 	/*GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);*/
-	planet.renderPlanet(model, lightpos);
-	planet.renderRings(model, lightpos);
+	planet.renderPlanet(model, lightpos, properRotation);
+	planet.renderRings(model, lightpos, properRotation);
 }
 
 CelestialBodyRenderer::~CelestialBodyRenderer()

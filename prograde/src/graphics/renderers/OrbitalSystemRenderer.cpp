@@ -93,17 +93,16 @@ void OrbitalSystemRenderer::updateMesh(UniversalTime uT,
 
 void OrbitalSystemRenderer::render(BasicCamera const& camera)
 {
-	// /!\ Sun will Always be behind !
-	billboard.render(camera);
-	/*for(auto bodyRenderer : bodyRenderers)
-	{
-	    bodyRenderer->render();
-	}*/
-
 	auto it(sortedRenderers.end());
+	bool centralBodyDrawn(false);
 	while(it != sortedRenderers.begin())
 	{
 		--it;
+		if(it->first < camDist && !centralBodyDrawn)
+		{
+			billboard.render(camera);
+			centralBodyDrawn = true;
+		}
 		GLHandler::clearDepthBuffer();
 		it->second->render();
 	}

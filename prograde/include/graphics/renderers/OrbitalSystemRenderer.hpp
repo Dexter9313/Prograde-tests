@@ -21,6 +21,7 @@
 
 #include "Billboard.hpp"
 
+#include "Camera.hpp"
 #include "CelestialBodyRenderer.hpp"
 #include "graphics/Utils.hpp"
 #include "physics/OrbitalSystem.hpp"
@@ -30,7 +31,7 @@ class OrbitalSystemRenderer //: public Renderer
 {
   public:
 	OrbitalSystemRenderer(OrbitalSystem* drawnSystem);
-	void updateMesh(UniversalTime uT, Vector3 const& cameraPos);
+	void updateMesh(UniversalTime uT, Camera const& camera);
 	void render(BasicCamera const& camera);
 	~OrbitalSystemRenderer();
 

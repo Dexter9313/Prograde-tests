@@ -134,11 +134,21 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
 	    planetLocalZ[2], 0.f, 0.f, 0.f, 0.f, 1.f);
 }
 
-void CelestialBodyRenderer::updateMesh(UniversalTime uT,
-                                       Vector3 const& cameraPos)
+void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 {
 	model = QMatrix4x4();
-	Vector3 camRelPos(drawnBody->getAbsolutePositionAtUT(uT) - cameraPos);
+	Vector3 camRelPos;
+
+	if(camera.target == drawnBody)
+	{
+		camRelPos = -1.0 * camera.getRelativePosition();
+	}
+	else
+	{
+		camRelPos = drawnBody->getAbsolutePositionAtUT(uT)
+		            - camera.getAbsolutePosition();
+	}
+
 	double camDist(camRelPos.length());
 	double scale(centerPosition / camDist);
 	model.translate(Utils::toQt(scale * camRelPos));
@@ -151,7 +161,7 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT,
 	model.scale(radiusScale);
 
 	Vector3 bodyCenter(scale * camRelPos);
-	Vector3 centralBodyCenter(-1 * scale * cameraPos);
+	Vector3 centralBodyCenter(-1 * scale * camera.getAbsolutePosition());
 
 	lightpos = Utils::toQt(centralBodyCenter - bodyCenter);
 	/*

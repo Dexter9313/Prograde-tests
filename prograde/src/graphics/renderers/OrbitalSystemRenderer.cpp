@@ -35,20 +35,19 @@ OrbitalSystemRenderer::OrbitalSystemRenderer(OrbitalSystem* drawnSystem)
 	}
 }
 
-void OrbitalSystemRenderer::updateMesh(UniversalTime uT,
-                                       Vector3 const& cameraPos)
+void OrbitalSystemRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 {
-	camDist = cameraPos.length();
+	camDist = camera.getAbsolutePosition().length();
 
 	sortedRenderers.clear();
 	for(CelestialBodyRenderer* bodyRenderer : bodyRenderers)
 	{
 		sortedRenderers[(bodyRenderer->getDrawnBody()->getAbsolutePositionAtUT(
 		                     uT)
-		                 - cameraPos)
+		                 - camera.getAbsolutePosition())
 		                    .length()]
 		    = bodyRenderer;
-		bodyRenderer->updateMesh(uT, cameraPos);
+		bodyRenderer->updateMesh(uT, camera);
 	}
 	bool centralBodyDrawn(false);
 
@@ -73,7 +72,8 @@ void OrbitalSystemRenderer::updateMesh(UniversalTime uT,
 			model.scale(radiusScale);*/
 
 			double scale(centerPosition / camDist);
-			billboard.position = Utils::toQt(-1 * scale * cameraPos);
+			billboard.position
+			    = Utils::toQt(-1 * scale * camera.getAbsolutePosition());
 			if((scale * drawnSystem->getCentralRadius()) / centerPosition
 			   < 0.0007)
 			{
@@ -86,7 +86,7 @@ void OrbitalSystemRenderer::updateMesh(UniversalTime uT,
 			centerPosition += increment;
 		}
 		rendererPair.second->setCenterPosition(centerPosition);
-		rendererPair.second->updateMesh(uT, cameraPos);
+		rendererPair.second->updateMesh(uT, camera);
 		centerPosition += increment;
 	}
 }

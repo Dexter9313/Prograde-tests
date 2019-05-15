@@ -138,7 +138,7 @@ void MainWin::updateScene(BasicCamera& camera)
 	}*/
 
 	cam.updateUT(clock.getCurrentUt());
-	systemRenderer->updateMesh(clock.getCurrentUt(), cam.getAbsolutePosition());
+	systemRenderer->updateMesh(clock.getCurrentUt(), cam);
 
 	std::stringstream stream;
 	stream.precision(2);

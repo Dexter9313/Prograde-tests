@@ -21,6 +21,7 @@
 
 #include <QFileInfo>
 
+#include "Camera.hpp"
 #include "GLHandler.hpp"
 #include "Planet.hpp"
 #include "Primitives.hpp"
@@ -33,7 +34,7 @@ class CelestialBodyRenderer //: public Renderer
 {
   public:
 	CelestialBodyRenderer(CelestialBody* drawnBody, std::string const& name);
-	void updateMesh(UniversalTime uT, Vector3 const& cameraPos);
+	void updateMesh(UniversalTime uT, Camera const& camera);
 	void render();
 	CelestialBody const* getDrawnBody() const { return drawnBody; };
 	void setCenterPosition(float centerPosition)

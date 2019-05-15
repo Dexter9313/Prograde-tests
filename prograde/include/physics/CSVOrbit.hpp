@@ -43,6 +43,7 @@ class CSVOrbit : public Orbit
 	                                            double frac);
 
 	std::map<uint64_t, Orbit::Parameters> parametersHistory;
+	std::string bodyName;
 };
 
 #endif // CSVORBIT_HPP

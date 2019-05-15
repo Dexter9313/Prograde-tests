@@ -26,6 +26,7 @@ SolarSystem::SolarSystem()
 	createPlanets();
 	createEarthSubSystem();
 	createMarsSubSystem();
+	createAsteroidBeltSubSystem();
 	createJupiterSubSystem();
 	createSaturnSubSystem();
 	createUranusSubSystem();
@@ -118,8 +119,9 @@ void SolarSystem::createPlanets()
 	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 20.020 / 180.f;
 	physicalParams.radius                 = 69911 * km;
 	physicalParams.color                  = Color(255, 204, 102);
+	physicalParams.mass                   = 1.89813 * 1e27;
 	physicalParams.atmosphere             = 0.f;
-	physicalParams.siderealTimeAtEpoch    = 4.135905250118928;
+	physicalParams.siderealTimeAtEpoch    = 4.667796671159006;
 	physicalParams.siderealRotationPeriod = 35730.0;
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
@@ -135,6 +137,7 @@ void SolarSystem::createPlanets()
 	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 317.020 / 180.f;
 	physicalParams.radius                 = 58232 * km;
 	physicalParams.color                  = Color(255, 204, 80);
+	physicalParams.mass                   = 5.68319 * 1e26;
 	physicalParams.innerRing              = 73788.72 * km;
 	physicalParams.outerRing              = 139595.64 * km;
 	physicalParams.siderealTimeAtEpoch    = 1.4399218441265502;
@@ -153,6 +156,7 @@ void SolarSystem::createPlanets()
 	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 142.238600 / 180.f;
 	physicalParams.radius                 = 25362 * km;
 	physicalParams.color                  = Color(180, 180, 255);
+	physicalParams.mass                   = 8.681 * 1e25;
 	physicalParams.innerRing              = 73788.72 * km;
 	physicalParams.outerRing              = 139595.64 * km;
 	physicalParams.siderealTimeAtEpoch    = 0.22880273383759028;
@@ -171,6 +175,7 @@ void SolarSystem::createPlanets()
 	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 256.228 / 180.f;
 	physicalParams.radius                 = 24622 * km;
 	physicalParams.color                  = Color(80, 51, 255);
+	physicalParams.mass                   = 1.0241 * 1e26;
 	physicalParams.innerRing              = 0.0;
 	physicalParams.outerRing              = 0.0;
 	physicalParams.siderealTimeAtEpoch    = 0.29515412512381;
@@ -189,6 +194,7 @@ void SolarSystem::createPlanets()
 	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 14.53 / 180.f;
 	physicalParams.radius                 = 1187 * km;
 	physicalParams.color                  = Color(178, 145, 67);
+	physicalParams.mass                   = 1.30900 * 1e22;
 	physicalParams.siderealTimeAtEpoch    = 1.3928349482951936;
 	physicalParams.siderealRotationPeriod = 551856.672;
 	physicalParams.northPoleRightAsc      = constant::pi * 132.993 / 180.f;
@@ -259,14 +265,127 @@ void SolarSystem::createMarsSubSystem()
 	createChild("Deimos", physicalParams, "Mars");
 }
 
+void SolarSystem::createAsteroidBeltSubSystem()
+{
+	CelestialBody::Parameters physicalParams;
+
+	// ceres
+	physicalParams.radius                 = 473.0 * km;
+	physicalParams.color                  = Color(100, 100, 100);
+	physicalParams.siderealTimeAtEpoch    = 3.422892798391968;
+	physicalParams.siderealRotationPeriod = 32667.84;
+	physicalParams.northPoleRightAsc      = constant::pi * 291.42744 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 66.764 / 180.f;
+	createChild("Ceres", physicalParams);
+}
+
 void SolarSystem::createJupiterSubSystem()
 {
-	/* content */
+	CelestialBody::Parameters physicalParams;
+
+	// io
+	physicalParams.radius                 = 1821.6 * km;
+	physicalParams.color                  = Color(224, 213, 92);
+	physicalParams.siderealTimeAtEpoch    = 1.7118221447865978;
+	physicalParams.siderealRotationPeriod = 152853.50471;
+	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
+	createChild("Io", physicalParams, "Jupiter");
+
+	// europa
+	physicalParams.radius                 = 1560.8 * km;
+	physicalParams.color                  = Color(178, 145, 67);
+	physicalParams.siderealTimeAtEpoch    = 6.008339408633722;
+	physicalParams.siderealRotationPeriod = 306822.0384;
+	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
+	createChild("Europa", physicalParams, "Jupiter");
+
+	// ganymede
+	physicalParams.radius                 = 2634.1 * km;
+	physicalParams.color                  = Color(100, 100, 100);
+	physicalParams.siderealTimeAtEpoch    = 0.3161974813725083;
+	physicalParams.siderealRotationPeriod = 618153.375744;
+	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
+	createChild("Ganymede", physicalParams, "Jupiter");
+
+	// callisto
+	physicalParams.radius                 = 2410.3 * km;
+	physicalParams.color                  = Color(100, 100, 100);
+	physicalParams.siderealTimeAtEpoch    = 4.322661995256511;
+	physicalParams.siderealRotationPeriod = 1441931.18976;
+	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
+	createChild("Callisto", physicalParams, "Jupiter");
 }
 
 void SolarSystem::createSaturnSubSystem()
 {
-	/* content */
+	CelestialBody::Parameters physicalParams;
+
+	// mimas
+	physicalParams.radius                 = 198.2 * km;
+	physicalParams.color                  = Color(100, 100, 100);
+	physicalParams.siderealTimeAtEpoch    = 1.2155833485761178;
+	physicalParams.siderealRotationPeriod = 81388.8;
+	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
+	createChild("Mimas", physicalParams, "Saturn");
+
+	// enceladus
+	physicalParams.radius                 = 252.1 * km;
+	physicalParams.color                  = Color(255, 255, 255);
+	physicalParams.siderealTimeAtEpoch    = 0.13550134480931364;
+	physicalParams.siderealRotationPeriod = 118386.8352;
+	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
+	createChild("Enceladus", physicalParams, "Saturn");
+
+	// tethys
+	physicalParams.radius                 = 531.1 * km;
+	physicalParams.color                  = Color(235, 235, 235);
+	physicalParams.siderealTimeAtEpoch    = 0.8407241612918419;
+	physicalParams.siderealRotationPeriod = 163106.0928;
+	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
+	createChild("Tethys", physicalParams, "Saturn");
+
+	// dione
+	physicalParams.radius                 = 561.9 * km;
+	physicalParams.color                  = Color(235, 235, 235);
+	physicalParams.siderealTimeAtEpoch    = 1.1236765986768573;
+	physicalParams.siderealRotationPeriod = 236469.456;
+	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
+	createChild("Dione", physicalParams, "Saturn");
+
+	// rhea
+	physicalParams.radius                 = 763.8 * km;
+	physicalParams.color                  = Color(235, 235, 235);
+	physicalParams.siderealTimeAtEpoch    = 1.4800620020294997;
+	physicalParams.siderealRotationPeriod = 390373.5168;
+	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
+	createChild("Rhea", physicalParams, "Saturn");
+
+	// titan
+	physicalParams.radius                 = 2574.73 * km;
+	physicalParams.color                  = Color(255, 204, 80);
+	physicalParams.siderealTimeAtEpoch    = 5.251245365815998;
+	physicalParams.siderealRotationPeriod = 1377648.0;
+	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
+	createChild("Titan", physicalParams, "Saturn");
+
+	// iapetus
+	physicalParams.radius                 = 734.5 * km;
+	physicalParams.color                  = Color(100, 100, 100);
+	physicalParams.siderealTimeAtEpoch    = 0.6189284346518459;
+	physicalParams.siderealRotationPeriod = 6853377.6;
+	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
+	createChild("Iapetus", physicalParams, "Saturn");
 }
 
 void SolarSystem::createUranusSubSystem()

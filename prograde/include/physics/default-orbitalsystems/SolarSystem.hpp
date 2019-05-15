@@ -49,6 +49,7 @@ class SolarSystem : public OrbitalSystem
 	void createPlanets();
 	void createEarthSubSystem();
 	void createMarsSubSystem();
+	void createAsteroidBeltSubSystem();
 	void createJupiterSubSystem();
 	void createSaturnSubSystem();
 	void createUranusSubSystem();

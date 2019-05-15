@@ -4,19 +4,39 @@ import os
 
 # list of name; JPL Horizons ID; type; reference body
 retrieve_list = [
-        ["Mercury", '199', 'majorbody', '500@10'],
-        ["Venus", '299', 'majorbody', '500@10'],
-        ["Earth", '399', 'majorbody', '500@10'],
-        ["Mars", '499', 'majorbody', '500@10'],
-        ["Jupiter", '599', 'majorbody', '500@10'],
-        ["Saturn", '699', 'majorbody', '500@10'],
-        ["Uranus", '799', 'majorbody', '500@10'],
-        ["Neptune", '899', 'majorbody', '500@10'],
-        ["Pluto", '999', 'majorbody', '500@10'],
+#        ["Mercury", '199', 'majorbody', '500@10'],
 
-        ["Phobos", '401', 'majorbody', '500@499'],
-        ["Deimos", '402', 'majorbody', '500@499'],
-        ["Moon", '301', 'majorbody', '500@399'],
+#        ["Venus", '299', 'majorbody', '500@10'],
+
+#        ["Earth", '399', 'majorbody', '500@10'],
+#        ["Moon", '301', 'majorbody', '500@399'],
+
+#        ["Mars", '499', 'majorbody', '500@10'],
+#        ["Phobos", '401', 'majorbody', '500@499'],
+#        ["Deimos", '402', 'majorbody', '500@499'],
+
+#        ["Ceres", '1', 'smallbody', '500@10'],
+
+#        ["Jupiter", '599', 'majorbody', '500@10'],
+#        ['Io', '501', 'majorbody', '500@599'],
+#        ['Europa', '502', 'majorbody', '500@599'],
+#        ['Ganymede', '503', 'majorbody', '500@599'],
+#        ['Callisto', '504', 'majorbody', '500@599'],
+
+        ["Saturn", '699', 'majorbody', '500@10'],
+        ["Mimas", '601', 'majorbody', '500@699'],
+        ["Enceladus", '602', 'majorbody', '500@699'],
+        ["Tethys", '603', 'majorbody', '500@699'],
+        ["Dione", '604', 'majorbody', '500@699'],
+        ["Rhea", '605', 'majorbody', '500@699'],
+        ["Titan", '606', 'majorbody', '500@699'],
+        ["Iapetus", '608', 'majorbody', '500@699'],
+
+#        ["Uranus", '799', 'majorbody', '500@10'],
+
+#        ["Neptune", '899', 'majorbody', '500@10'],
+
+#        ["Pluto", '999', 'majorbody', '500@10'],
 ]
 
 

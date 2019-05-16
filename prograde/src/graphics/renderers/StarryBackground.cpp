@@ -117,7 +117,7 @@ void StarryBackground::initMesh(std::vector<Star> const& stars, float axialTilt)
 	for(Star star : stars)
 	{
 		pos[0] = cos(star.latitude) * cos(star.longitude);
-		pos[1] = -1 * cos(star.latitude) * sin(star.longitude);
+		pos[1] = cos(star.latitude) * sin(star.longitude);
 		pos[2] = sin(star.latitude);
 		pos.rotateAlongX(-1.f * axialTilt);
 		vboContent.push_back(pos[0] * 1000);

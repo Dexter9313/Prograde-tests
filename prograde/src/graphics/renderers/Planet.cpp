@@ -362,5 +362,9 @@ Planet::~Planet()
 		{
 			GLHandler::deleteRenderTarget(ringTexTarget);
 		}
+		else
+		{
+			GLHandler::deleteTexture(ringtex);
+		}
 	}
 }

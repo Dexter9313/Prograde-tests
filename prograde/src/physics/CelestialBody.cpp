@@ -119,9 +119,9 @@ float CelestialBody::getPrimeMeridianSiderealTimeAtUT(UniversalTime uT) const
 	uT -= round(uT / parameters.siderealRotationPeriod)
 	      * UniversalTime(parameters.siderealRotationPeriod);
 
-	return static_cast<float>(parameters.siderealTimeAtEpoch
-	                          + 2.0 * constant::pi * uT
-	                                / parameters.siderealRotationPeriod);
+	return parameters.siderealTimeAtEpoch
+	       + 2.0 * constant::pi * static_cast<double>(uT)
+	             / parameters.siderealRotationPeriod;
 }
 
 CelestialBody::~CelestialBody()

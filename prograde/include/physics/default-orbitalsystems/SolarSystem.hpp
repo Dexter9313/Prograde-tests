@@ -55,6 +55,7 @@ class SolarSystem : public OrbitalSystem
 	void createUranusSubSystem();
 	void createNeptuneSubSystem();
 	void createPlutoSubSystem();
+	void createTransNeptunianSubSystem();
 
 	double au = 149597870700;
 	float km  = 1000;

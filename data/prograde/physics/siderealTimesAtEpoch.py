@@ -24,20 +24,27 @@ planets=[
 #    ['Ganymede', '503', 'majorbody', '500@10', 618153.375744],
 #    ['Callisto', '504', 'majorbody', '500@0', 1441931.18976],
 
-    ['Saturn', '699', 'majorbody', '500@10', 37980.0],
-    ["Mimas", '601', 'majorbody', '500@10', 81388.8],
-    ["Enceladus", '602', 'majorbody', '500@10', 118386.8352],
-    ["Tethys", '603', 'majorbody', '500@10', 163106.0928],
-    ["Dione", '604', 'majorbody', '500@10', 236469.456],
-    ["Rhea", '605', 'majorbody', '500@10', 390373.5168],
-    ["Titan", '606', 'majorbody', '500@10', 1377648.0],
-    ["Iapetus", '608', 'majorbody', '500@10', 6853377.6],
+#    ['Saturn', '699', 'majorbody', '500@10', 37980.0],
+#    ["Mimas", '601', 'majorbody', '500@10', 81388.8],
+#    ["Enceladus", '602', 'majorbody', '500@10', 118386.8352],
+#    ["Tethys", '603', 'majorbody', '500@10', 163106.0928],
+#    ["Dione", '604', 'majorbody', '500@10', 236469.456],
+#    ["Rhea", '605', 'majorbody', '500@10', 390373.5168],
+#    ["Titan", '606', 'majorbody', '500@10', 1377648.0],
+#    ["Iapetus", '608', 'majorbody', '500@10', 6853377.6],
 
-#    ['Uranus', '799', 'majorbody', '500@10', 62063.712],
+    ['Uranus', '799', 'majorbody', '500@10', 62063.712],
+    ["Miranda", '705', 'majorbody', '500@10', 122124.5856],
+    ["Ariel", '701', 'majorbody', '500@10', 217728.0],
+    ["Umbriel", '702', 'majorbody', '500@10', 358041.6],
+    ["Titania", '703', 'majorbody', '500@10', 752218.6176],
+    ["Oberon", '704', 'majorbody', '500@10', 1163223.4176],
 
 #    ['Neptune', '899', 'majorbody', '500@10', 58000.32, 2469806.5],
+#    ['Triton', '801', 'majorbody', '500@10', 507772.8],
 
 #    ['Pluto', '999', 'majorbody', '500@10', 551856.672, 2488068.5],
+#    ['Charon', '901', 'majorbody', '500@10', 551856.70656, 2488068.5],
 ]
 
 for planet in planets:
@@ -54,6 +61,10 @@ for planet in planets:
         period=9502
     elif planet[0] == "Saturn" or planet[0] == "Mimas" or planet[0] == "Enceladus" or planet[0] == "Tethys" or planet[0] == "Dione" or planet[0] == "Rhea" or planet[0] == "Titan" or planet[0] == "Iapetus":
         period=18000
+    elif planet[0] == "Uranus" or planet[0] == "Miranda" or planet[0] == "Ariel" or planet[0] == "Umbriel" or planet[0] == "Titania" or planet[0] == "Oberon":
+        period = 50000
+    elif planet[0] == "Neptune" or planet[0] == "Triton":
+        period=100000
     else:
         period=math.ceil(elem['P'][0])
     print("P: " + str(period) + " days")

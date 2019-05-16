@@ -36,18 +36,18 @@ void MainWin::keyPressEvent(QKeyEvent* e)
 	else if(e->key() == Qt::Key_R)
 	{
 		float timeCoeff(clock.getTimeCoeff());
-		if(timeCoeff >= 10)
+		if(timeCoeff >= 10.f)
 		{
-			timeCoeff /= 10;
+			timeCoeff /= 10.f;
 		}
 		clock.setTimeCoeff(timeCoeff);
 	}
 	else if(e->key() == Qt::Key_T)
 	{
 		float timeCoeff(clock.getTimeCoeff());
-		if(timeCoeff <= 100000)
+		if(timeCoeff <= 100000.f)
 		{
-			timeCoeff *= 10;
+			timeCoeff *= 10.f;
 		}
 		clock.setTimeCoeff(timeCoeff);
 	}
@@ -138,7 +138,7 @@ void MainWin::updateScene(BasicCamera& camera)
 	}*/
 
 	cam.updateUT(clock.getCurrentUt());
-	systemRenderer->updateMesh(clock.getCurrentUt(), cam.getAbsolutePosition());
+	systemRenderer->updateMesh(clock.getCurrentUt(), cam);
 
 	std::stringstream stream;
 	stream.precision(2);

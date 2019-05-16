@@ -22,6 +22,7 @@ CSVOrbit::CSVOrbit(MassiveBodyMass const& massiveBodyMass,
                    std::string const& bodyName)
     : Orbit(MassiveBodyMass(massiveBodyMass),
             Parameters({0.f, 0.f, 0.f, 0.f, 1.f, 0.f}))
+    , bodyName(bodyName)
 {
 	QString path("data/prograde/physics/orbital-params/");
 	path += bodyName.c_str();
@@ -85,15 +86,31 @@ void CSVOrbit::updateParameters(UniversalTime uT)
 	else
 	{
 		UniversalTime beg(it1->first * 24 * 3600), end(it2->first * 24 * 3600);
-		double frac((uT - beg) / (end - beg));
+		UniversalTime intervalUT(end - beg);
+		double interval(intervalUT);
+		UniversalTime fracUT((uT - beg) / interval);
+		double frac(fracUT);
 		Parameters p1(it1->second), p2(it2->second);
 
 		parameters.inclination
 		    = interpolateAngle(p1.inclination, p2.inclination, frac);
 		parameters.ascendingNodeLongitude = interpolateAngle(
 		    p1.ascendingNodeLongitude, p2.ascendingNodeLongitude, frac);
-		parameters.periapsisArgument = interpolateAngle(
-		    p1.periapsisArgument, p2.periapsisArgument, frac);
+
+		// Tethys has an orbit pretty much impossible to interpolate :
+		// eccentricity is so low that periapsisArgument moves Very fast
+		// and meanAnomaly behavior is then changed
+		if(bodyName == "Tethys")
+		{
+			parameters.periapsisArgument = interpolateAngleAlwaysForward(
+			    p1.periapsisArgument, p2.periapsisArgument, frac);
+		}
+		else
+		{
+			parameters.periapsisArgument = interpolateAngle(
+			    p1.periapsisArgument, p2.periapsisArgument, frac);
+		}
+
 		parameters.eccentricity
 		    = (1.0 - frac) * p1.eccentricity + frac * p2.eccentricity;
 		parameters.semiMajorAxis
@@ -101,7 +118,7 @@ void CSVOrbit::updateParameters(UniversalTime uT)
 
 		updatePeriod();
 
-		if(2.0 * (end - beg) < getPeriod())
+		if(2.0 * interval < getPeriod() || bodyName == "Tethys")
 		{
 			parameters.meanAnomalyAtEpoch = interpolateAngle(
 			    p1.meanAnomalyAtEpoch, p2.meanAnomalyAtEpoch, frac);
@@ -112,20 +129,19 @@ void CSVOrbit::updateParameters(UniversalTime uT)
 			    p1.meanAnomalyAtEpoch, p2.meanAnomalyAtEpoch, frac);
 		}
 
-		if(getPeriod() < end - beg)
+		if(getPeriod() < interval)
 		{
-			parameters.meanAnomalyAtEpoch = static_cast<double>(
-			    p1.meanAnomalyAtEpoch
-			    + 2.0 * constant::pi * (frac * (end - beg)) / getPeriod());
+			parameters.meanAnomalyAtEpoch
+			    = p1.meanAnomalyAtEpoch
+			      + 2.0 * constant::pi * (frac * interval) / getPeriod();
 
 			parameters.meanAnomalyAtEpoch
 			    -= floor(parameters.meanAnomalyAtEpoch / (2.0 * constant::pi))
 			       * 2.0 * constant::pi;
 
 			double MAatEnd(p2.meanAnomalyAtEpoch);
-			double MAcomputed(static_cast<double>(
-			    p1.meanAnomalyAtEpoch
-			    + 2.0 * constant::pi * (end - beg) / getPeriod()));
+			double MAcomputed(p1.meanAnomalyAtEpoch
+			                  + 2.0 * constant::pi * interval / getPeriod());
 
 			while(MAatEnd < MAcomputed)
 			{

@@ -30,6 +30,7 @@ class Camera : public BasicCamera
   public:
 	Camera(VRHandler const* vrHandler);
 	void updateUT(UniversalTime uT);
+	Vector3 getRelativePosition() const { return relativePosition; };
 	Vector3 getAbsolutePosition() const { return absolutePosition; };
 
 	float angleAroundZ = 0.f;
@@ -63,6 +64,7 @@ class Camera : public BasicCamera
 
 	void updateView();
 
+	Vector3 relativePosition;
 	Vector3 absolutePosition;
 };
 

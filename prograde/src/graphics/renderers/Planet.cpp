@@ -251,9 +251,10 @@ void Planet::updateRing()
 	}
 
 	GLHandler::ShaderProgram shader = GLHandler::newShader("planet/ringtex");
-	GLHandler::Mesh mesh            = GLHandler::newMesh();
-	GLHandler::setVertices(mesh, {-1.f, -1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f},
-	                       shader, {{"position", 2}});
+	GLHandler::Mesh tmpMesh         = GLHandler::newMesh();
+	GLHandler::setVertices(tmpMesh,
+	                       {-1.f, -1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f}, shader,
+	                       {{"position", 2}});
 
 	GLHandler::setShaderParam(shader, "color", QColor(210, 180, 140));
 	GLHandler::setShaderParam(
@@ -263,9 +264,9 @@ void Planet::updateRing()
 
 	GLHandler::beginRendering(ringTexTarget);
 	GLHandler::useShader(shader);
-	GLHandler::render(mesh, GLHandler::PrimitiveType::TRIANGLE_STRIP);
+	GLHandler::render(tmpMesh, GLHandler::PrimitiveType::TRIANGLE_STRIP);
 
-	GLHandler::deleteMesh(mesh);
+	GLHandler::deleteMesh(tmpMesh);
 	GLHandler::deleteShader(shader);
 }
 

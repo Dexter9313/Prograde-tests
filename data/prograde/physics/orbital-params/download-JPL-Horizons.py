@@ -1,3 +1,5 @@
+# pip3 install --pre astroquery
+# pip3 install keyrings.alt
 from astroquery.jplhorizons import Horizons
 import os
 

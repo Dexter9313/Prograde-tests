@@ -81,6 +81,12 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
 		planet.initTerrestrial(Utils::toQt(drawnBody->getParameters().color));
 	}
 
+	if(QFileInfo(QString("data/prograde/models/") + name.c_str() + ".ply")
+	       .exists())
+	{
+		customModel = planet.updateModel(QString(name.c_str()) + ".ply");
+	}
+
 	// RINGS
 
 	float outerRing(drawnBody->getParameters().outerRing);
@@ -160,6 +166,12 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	}
 	model.scale(radiusScale);
 
+	// custom models have km units, not radius units
+	if(customModel)
+	{
+		model.scale(1000.0 / drawnBody->getParameters().radius);
+	}
+
 	Vector3 bodyCenter(scale * camRelPos);
 	Vector3 centralBodyCenter(-1 * scale * camera.getAbsolutePosition());
 
@@ -170,8 +182,10 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	   "centralBodyCenter", Utils::toQt(centralBodyCenter));
 	*/
 
-	float siderealTime
-	    = drawnBody->getPrimeMeridianSiderealTimeAtUT(uT) + constant::pi;
+	// custom models have (1, 0, 0) at planetographic origin
+	// non custom have (-1, 0, 0) at planetographic origin
+	float siderealTime = drawnBody->getPrimeMeridianSiderealTimeAtUT(uT)
+	                     + (customModel ? 0.0 : constant::pi);
 
 	QMatrix4x4 sideralRotation;
 	sideralRotation.rotate(siderealTime * 180.f / constant::pi,
@@ -184,7 +198,7 @@ void CelestialBodyRenderer::render()
 {
 	/*GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);*/
-	planet.renderPlanet(model, lightpos, properRotation);
+	planet.renderPlanet(model, lightpos, properRotation, customModel);
 	planet.renderRings(model, lightpos, properRotation);
 }
 

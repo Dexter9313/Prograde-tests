@@ -54,6 +54,7 @@ class CelestialBodyRenderer //: public Renderer
 	QMatrix4x4 model;
 
 	Planet planet;
+	bool customModel = false;
 	QVector3D lightpos;
 	QMatrix4x4 baseRotation;   // only align axis, no sideral time
 	QMatrix4x4 properRotation; // full rotation, sideral time included

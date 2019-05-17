@@ -152,6 +152,38 @@ void Planet::initFromTex(QString const& diffusePath, QString const& normalPath,
 	GLHandler::deleteShader(snorm);
 }
 
+bool Planet::updateModel(QString const& modelName)
+{
+	std::vector<GLHandler::Mesh> meshes;
+	std::vector<GLHandler::Texture> textures;
+	AssetLoader::loadModel(modelName, meshes, textures, shader);
+
+	bool result;
+	if(meshes.size() == 1)
+	{
+		GLHandler::deleteMesh(mesh);
+		mesh   = meshes[0];
+		result = true;
+	}
+	else
+	{
+		std::cerr << "Error : Cannot import " << modelName.toStdString()
+		          << "... " << meshes.size() << " models read." << std::endl;
+		for(auto vMesh : meshes)
+		{
+			GLHandler::deleteMesh(vMesh);
+		}
+		result = false;
+	}
+
+	for(auto vTex : textures)
+	{
+		GLHandler::deleteTexture(vTex);
+	}
+
+	return result;
+}
+
 void Planet::initRing(float innerRing, float outerRing,
                       QString const& texturePath)
 {
@@ -238,21 +270,25 @@ void Planet::updateRing()
 }
 
 void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
-                          QMatrix4x4 const& properRotation)
+                          QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	QMatrix4x4 model;
 
 	model.translate(pos);
 	model.scale(radius);
 
-	renderPlanet(model, lightpos, properRotation);
+	renderPlanet(model, lightpos, properRotation, flipCoords);
 }
 
 void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
-                          QMatrix4x4 const& properRotation)
+                          QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	GLHandler::setShaderParam(shader, "lightpos", lightpos);
 	GLHandler::setShaderParam(shader, "properRotation", properRotation);
+	if(flipCoords)
+	{
+		GLHandler::setShaderParam(shader, "flipCoords", QVector2D(-1.f, -1.f));
+	}
 
 	if(!normal)
 	{

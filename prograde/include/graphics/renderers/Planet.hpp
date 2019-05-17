@@ -19,6 +19,7 @@
 #ifndef PLANET_H
 #define PLANET_H
 
+#include "AssetLoader.hpp"
 #include "BasicCamera.hpp"
 #include "GLHandler.hpp"
 #include "Primitives.hpp"
@@ -37,14 +38,17 @@ class Planet
 	void initFromTex(QString const& diffusePath);
 	void initFromTex(QString const& diffusePath, QString const& normalPath,
 	                 float atmosphere = 0.f);
+	bool updateModel(QString const& modelName);
 
 	void initRing(float innerRing, float outerRing,
 	              QString const& texturePath = "");
 	void updateRing();
 	void renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
-	                  QMatrix4x4 const& properRotation);
+	                  QMatrix4x4 const& properRotation,
+	                  bool flipCoords = false);
 	void renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
-	                  QMatrix4x4 const& properRotation);
+	                  QMatrix4x4 const& properRotation,
+	                  bool flipCoords = false);
 	void renderRings(QVector3D const& pos, QVector3D const& lightpos,
 	                 QMatrix4x4 const& properRotation);
 	void renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,

@@ -218,6 +218,37 @@ void SolarSystem::createAsteroidBeltSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 291.42744 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 66.764 / 180.f;
 	createChild("Ceres", physicalParams);
+
+	// pallas
+	physicalParams.radius                 = 256.0 * km;
+	physicalParams.color                  = Color(100, 100, 100);
+	physicalParams.siderealTimeAtEpoch    = 3.532654368722707;
+	physicalParams.siderealRotationPeriod = 28127.52;
+	// kind of random values
+	physicalParams.northPoleRightAsc    = constant::pi * 0.0 / 180.f;
+	physicalParams.northPoleDeclination = constant::pi * 10.0 / 180.f;
+	createChild("Pallas", physicalParams);
+
+	// juno
+	physicalParams.radius = 135.7 * km;
+	physicalParams.color  = Color(100, 100, 100);
+	// UNKNOWN
+	physicalParams.siderealTimeAtEpoch    = 0.0;
+	physicalParams.siderealRotationPeriod = 25954.56;
+	// kind of random values
+	physicalParams.northPoleRightAsc    = constant::pi * 0.0 / 180.f;
+	physicalParams.northPoleDeclination = constant::pi * 10.0 / 180.f;
+	createChild("Juno", physicalParams);
+
+	// vesta
+	physicalParams.radius = 262.7 * km;
+	physicalParams.color  = Color(100, 100, 100);
+	// UNKNOWN
+	physicalParams.siderealTimeAtEpoch    = 0.0;
+	physicalParams.siderealRotationPeriod = 19232.64;
+	physicalParams.northPoleRightAsc      = constant::pi * 308.0 / 180.f;
+	physicalParams.northPoleDeclination   = constant::pi * 48.0 / 180.f;
+	createChild("Vesta", physicalParams);
 }
 
 void SolarSystem::createJupiterSubSystem()

@@ -19,6 +19,9 @@ planets=[
 #    ['Deimos', '402', 'majorbody', '500@10', 109123.2],
 
 #    ['Ceres', '1', 'smallbody', '500@10', 32667.84],
+#    ['Pallas', '2', 'smallbody', '500@10', 28127.52],
+#    ['Juno', '3', 'smallbody', '500@10', 25954.56], # UNKNOWN
+#    ['Vesta', '4', 'smallbody', '500@10', 19232.64], # UNKNOWN
 
 #    ['Jupiter', '599', 'majorbody', '500@10', 35730.0],
 #    ['Io', '501', 'majorbody', '500@10', 152853.50471],

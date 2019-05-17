@@ -18,6 +18,9 @@ retrieve_list = [
 #        ["Deimos", '402', 'majorbody', '500@499'],
 
 #        ["Ceres", '1', 'smallbody', '500@10'],
+#        ['Pallas', '2', 'smallbody', '500@10'],
+#        ['Juno', '3', 'smallbody', '500@10'],
+#        ['Vesta', '4', 'smallbody', '500@10'],
 
 #        ["Jupiter", '599', 'majorbody', '500@10'],
 #        ['Io', '501', 'majorbody', '500@599'],

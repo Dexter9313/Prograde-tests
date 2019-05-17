@@ -130,7 +130,7 @@ void SolarSystem::createPlanets()
 	// extrapolated from https://www.calsky.com/cs.cgi?cha=7&sec=6&sub=1
 	// predictions over a year
 	// a lot of eyeballing also !
-	physicalParams.siderealTimeAtEpoch   = constant::pi * 140.0 / 180.0;
+	physicalParams.siderealTimeAtEpoch    = constant::pi * 140.0 / 180.0;
 	physicalParams.siderealRotationPeriod = 35744.20;
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;

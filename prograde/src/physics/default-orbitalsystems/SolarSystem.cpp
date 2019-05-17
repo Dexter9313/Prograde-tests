@@ -60,16 +60,18 @@ void SolarSystem::createPlanets()
 	createChild("Mercury", physicalParams);
 
 	// venus
-	orbitalParams.inclination             = constant::pi * 3.39458 / 180.f;
-	orbitalParams.ascendingNodeLongitude  = constant::pi * 76.680 / 180.f;
-	orbitalParams.periapsisArgument       = constant::pi * 54.884 / 180.f;
-	orbitalParams.eccentricity            = 0.006772;
-	orbitalParams.semiMajorAxis           = 0.723332 * au;
-	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 50.115 / 180.f;
-	physicalParams.radius                 = 6051.8 * km;
-	physicalParams.color                  = Color(255, 255, 204);
-	physicalParams.siderealTimeAtEpoch    = 3.3587532198310948;
-	physicalParams.siderealRotationPeriod = 20997360.0;
+	orbitalParams.inclination            = constant::pi * 3.39458 / 180.f;
+	orbitalParams.ascendingNodeLongitude = constant::pi * 76.680 / 180.f;
+	orbitalParams.periapsisArgument      = constant::pi * 54.884 / 180.f;
+	orbitalParams.eccentricity           = 0.006772;
+	orbitalParams.semiMajorAxis          = 0.723332 * au;
+	orbitalParams.meanAnomalyAtEpoch     = constant::pi * 50.115 / 180.f;
+	physicalParams.radius                = 6051.8 * km;
+	physicalParams.color                 = Color(255, 255, 204);
+	physicalParams.siderealTimeAtEpoch   = 3.3587532198310948;
+	// physicalParams.siderealRotationPeriod = 20997360.0;
+	// ~4.4d ; we actually want the Atmosphere rotation period for visualization
+	physicalParams.siderealRotationPeriod = 380234.594;
 	physicalParams.northPoleRightAsc      = constant::pi * 92.76 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * -67.16 / 180.f;
 	// createChild("Venus", orbitalParams, physicalParams);
@@ -112,18 +114,24 @@ void SolarSystem::createPlanets()
 	createChild("Mars", physicalParams);
 
 	// jupiter
-	orbitalParams.inclination             = constant::pi * 1.303 / 180.f;
-	orbitalParams.ascendingNodeLongitude  = constant::pi * 100.464 / 180.f;
-	orbitalParams.periapsisArgument       = constant::pi * 273.867 / 180.f;
-	orbitalParams.eccentricity            = 0.048498;
-	orbitalParams.semiMajorAxis           = 5.20260 * au;
-	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 20.020 / 180.f;
-	physicalParams.radius                 = 69911 * km;
-	physicalParams.color                  = Color(255, 204, 102);
-	physicalParams.mass                   = 1.89813 * 1e27;
-	physicalParams.atmosphere             = 0.f;
-	physicalParams.siderealTimeAtEpoch    = 4.667796671159006;
-	physicalParams.siderealRotationPeriod = 35730.0;
+	orbitalParams.inclination            = constant::pi * 1.303 / 180.f;
+	orbitalParams.ascendingNodeLongitude = constant::pi * 100.464 / 180.f;
+	orbitalParams.periapsisArgument      = constant::pi * 273.867 / 180.f;
+	orbitalParams.eccentricity           = 0.048498;
+	orbitalParams.semiMajorAxis          = 5.20260 * au;
+	orbitalParams.meanAnomalyAtEpoch     = constant::pi * 20.020 / 180.f;
+	physicalParams.radius                = 69911 * km;
+	physicalParams.color                 = Color(255, 204, 102);
+	physicalParams.mass                  = 1.89813 * 1e27;
+	physicalParams.atmosphere            = 0.f;
+	// physicalParams.siderealTimeAtEpoch   = 4.667796671159006;
+	// physicalParams.siderealRotationPeriod = 35730.0;
+	// we actually want the Red Spot rotation period for visualization
+	// extrapolated from https://www.calsky.com/cs.cgi?cha=7&sec=6&sub=1
+	// predictions over a year
+	// a lot of eyeballing also !
+	physicalParams.siderealTimeAtEpoch   = constant::pi * 140.0 / 180.0;
+	physicalParams.siderealRotationPeriod = 35744.20;
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
 	// createChild("Jupiter", orbitalParams, physicalParams);

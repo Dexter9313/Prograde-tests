@@ -319,6 +319,17 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Titan", physicalParams, "Saturn");
 
+	// hyperion
+	physicalParams.radius = 135.0 * km;
+	physicalParams.color  = Color(178, 145, 67);
+	// UNKNOWN
+	physicalParams.siderealTimeAtEpoch    = 0.0;
+	physicalParams.siderealRotationPeriod = 1123200.0;
+	// kind of random values
+	physicalParams.northPoleRightAsc    = constant::pi * 40.589 / 180.f;
+	physicalParams.northPoleDeclination = constant::pi * 10.537 / 180.f;
+	createChild("Hyperion", physicalParams, "Saturn");
+
 	// iapetus
 	physicalParams.radius                 = 734.5 * km;
 	physicalParams.color                  = Color(100, 100, 100);

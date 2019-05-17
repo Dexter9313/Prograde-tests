@@ -25,13 +25,14 @@ retrieve_list = [
 #        ['Ganymede', '503', 'majorbody', '500@599'],
 #        ['Callisto', '504', 'majorbody', '500@599'],
 
-#        ["Saturn", '699', 'majorbody', '500@10'],
+        ["Saturn", '699', 'majorbody', '500@10'],
 #        ["Mimas", '601', 'majorbody', '500@699'],
 #        ["Enceladus", '602', 'majorbody', '500@699'],
 #        ["Tethys", '603', 'majorbody', '500@699'],
 #        ["Dione", '604', 'majorbody', '500@699'],
 #        ["Rhea", '605', 'majorbody', '500@699'],
 #        ["Titan", '606', 'majorbody', '500@699'],
+        ["Hyperion", '607', 'majorbody', '500@699'],
 #        ["Iapetus", '608', 'majorbody', '500@699'],
 
 #        ["Uranus", '799', 'majorbody', '500@10'],
@@ -47,9 +48,9 @@ retrieve_list = [
 #        ["Pluto", '999', 'majorbody', '500@10'],
 #        ["Charon", '901', 'majorbody', '500@999'],
 
-        ["Eris", '136199', 'smallbody', '500@10'],
-        ["Makemake", '136472', 'smallbody', '500@10'],
-        ["Haumea", '136108', 'smallbody', '500@10'],
+#        ["Eris", '136199', 'smallbody', '500@10'],
+#        ["Makemake", '136472', 'smallbody', '500@10'],
+#        ["Haumea", '136108', 'smallbody', '500@10'],
 ]
 
 

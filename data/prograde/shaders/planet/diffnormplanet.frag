@@ -10,6 +10,9 @@ uniform float atmosphere;
 
 uniform vec3 lightpos;
 
+// only if custom mesh would it be -1, -1
+uniform vec2 flipCoords = vec2(1.0, 1.0);
+
 out vec4 outColor;
 
 const float minR = 0.45;
@@ -23,9 +26,10 @@ const float maxB = 1.0;
 
 void main()
 {
-	vec4 diffuse = texture(diff, f_position);
-	vec3 normal  = texture(norm, f_position).xyz;
+	vec4 diffuse = texture(diff, vec3(flipCoords * f_position.xy, f_position.z));
+	vec3 normal  = texture(norm, vec3(flipCoords * f_position.xy, f_position.z)).xyz;
 	normal       = normalize(normal * 2.0 - 1.0); // from [0;1] to [-1;1]
+	normal.xy *= flipCoords;
 
 	// 0 or 1
 	// avoids lighting stuff behind the planet

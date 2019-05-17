@@ -500,7 +500,9 @@ void SolarSystem::createTransNeptunianSubSystem()
 	createChild("Makemake", physicalParams);
 
 	// haumea
-	physicalParams.radius    = 800.0 * km;
+	physicalParams.radius = 960.0 * km;
+	physicalParams.oblateness.setXYZ(960.0 / 960.0, 770.0 / 960.0,
+	                                 495.0 / 960.0);
 	physicalParams.color     = Color(255, 200, 200);
 	physicalParams.innerRing = 2252.0 * km;
 	physicalParams.outerRing = 2322.0 * km;
@@ -510,6 +512,7 @@ void SolarSystem::createTransNeptunianSubSystem()
 	// physicalParams.northPoleDeclination   = constant::pi * / 180.f;
 	createChild("Haumea", physicalParams);
 
+	physicalParams.oblateness.setXYZ(1.0, 1.0, 1.0);
 	physicalParams.innerRing = 0.0;
 	physicalParams.outerRing = 0.0;
 }

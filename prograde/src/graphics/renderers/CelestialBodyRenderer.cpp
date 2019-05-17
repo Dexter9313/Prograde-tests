@@ -20,7 +20,7 @@
 CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
                                              std::string const& name)
     : drawnBody(drawnBody)
-    , planet(1.f)
+    , planet(1.f, Utils::toQt(drawnBody->getParameters().oblateness))
 {
 	/*shader = GLHandler::newShader("farcelestialbody");
 	GLHandler::setShaderParam(shader, "color",

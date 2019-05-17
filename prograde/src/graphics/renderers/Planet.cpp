@@ -18,8 +18,9 @@
 
 #include "graphics/renderers/Planet.hpp"
 
-Planet::Planet(float radius)
+Planet::Planet(float radius, QVector3D const& oblateness)
     : radius(radius)
+    , oblateness(oblateness)
 {
 	cubemapDiffuse = GLHandler::newRenderTarget(2048, 2048, GL_RGBA16F, true);
 }
@@ -286,6 +287,7 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
 {
 	GLHandler::setShaderParam(shader, "lightpos", lightpos);
 	GLHandler::setShaderParam(shader, "properRotation", properRotation);
+	GLHandler::setShaderParam(shader, "oblateness", oblateness);
 	if(flipCoords)
 	{
 		GLHandler::setShaderParam(shader, "flipCoords", QVector2D(-1.f, -1.f));

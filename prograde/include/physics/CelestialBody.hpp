@@ -41,6 +41,7 @@ class CelestialBody
 		Type type = Type::GENERIC;
 		double mass;
 		double radius;
+		Vector3 oblateness = Vector3(1.0, 1.0, 1.0);
 		Color color;
 		float atmosphere = 0.f;
 		float innerRing  = 0.f;

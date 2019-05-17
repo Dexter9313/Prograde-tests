@@ -8,6 +8,8 @@ uniform mat4 properRotation
     = mat4(vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0),
            vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0));
 
+uniform vec3 oblateness = vec3(1.0, 1.0, 1.0);
+
 out vec3 f_position;
 out mat4 f_invrot;
 out mat3 f_tantoworld;
@@ -24,5 +26,5 @@ void main()
 
 	f_tantoworld = mat3(transTan, transBiTan, transNorm);
 
-	gl_Position = camera * properRotation * vec4(position, 1.0);
+	gl_Position = camera * properRotation * vec4(position * oblateness, 1.0);
 }

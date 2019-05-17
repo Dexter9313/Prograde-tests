@@ -29,7 +29,8 @@
 class Planet
 {
   public:
-	Planet(float radius = 1.f);
+	Planet(float radius                = 1.f,
+	       QVector3D const& oblateness = QVector3D(1.0, 1.0, 1.0));
 
 	void initTerrestrial(QColor const& color = QColor(255, 255, 255),
 	                     float polarLatitude = 90.f, float atmosphere = 0.f);
@@ -61,6 +62,7 @@ class Planet
 
 	bool valid = false;
 	float radius;
+	QVector3D oblateness;
 
 	bool normal = false;
 

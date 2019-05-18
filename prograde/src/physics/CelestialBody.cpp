@@ -93,6 +93,11 @@ CelestialBody::Parameters CelestialBody::getParameters() const
 	return parameters;
 }
 
+Vector3 CelestialBody::getRelativePositionAtUT(UniversalTime uT) const
+{
+	return orbit->getPositionAtUT(uT);
+}
+
 Vector3 CelestialBody::getAbsolutePositionAtUT(UniversalTime uT) const
 {
 	Vector3 result(orbit->getPositionAtUT(uT));
@@ -131,4 +136,110 @@ CelestialBody::~CelestialBody()
 		delete child;
 	}
 	delete orbit;
+}
+
+Vector3 CelestialBody::getRelativePositionAtUt(CelestialBody const* from,
+                                               CelestialBody const* to,
+                                               UniversalTime uT)
+{
+	if(from == to)
+	{
+		return Vector3(0.0, 0.0, 0.0);
+	}
+
+	// Chain of relative positions from central body to from.
+	// The sum of the stored Vector3 should be absolute position
+	// of from.
+	std::vector<std::pair<CelestialBody const*, Vector3>>
+	    fromAncestorsRelativePositions;
+	// Chain of relative positions from central body to to.
+	// The sum of the stored Vector3 should be absolute position
+	// of to.
+	std::vector<std::pair<CelestialBody const*, Vector3>>
+	    toAncestorsRelativePositions;
+
+	// construct fromAncestorsRelativePositions
+	fromAncestorsRelativePositions.push_back(
+	    {from, from->getRelativePositionAtUT(uT)});
+	CelestialBody const* currentBody(from);
+	CelestialBody const* parent(currentBody->getParent());
+	while(parent != nullptr)
+	{
+		fromAncestorsRelativePositions.push_back(
+		    {parent, currentBody->getRelativePositionAtUT(uT)});
+		currentBody = parent;
+		parent      = currentBody->getParent();
+	}
+
+	// construct toAncestorsRelativePositions
+	toAncestorsRelativePositions.push_back(
+	    {to, to->getRelativePositionAtUT(uT)});
+	currentBody = to;
+	parent      = currentBody->getParent();
+	while(parent != nullptr)
+	{
+		toAncestorsRelativePositions.push_back(
+		    {parent, currentBody->getRelativePositionAtUT(uT)});
+		currentBody = parent;
+		parent      = currentBody->getParent();
+	}
+
+	// go up the tree from lowest node to start from both sides at the same
+	// depth
+	unsigned int i(0), j(0);
+	if(fromAncestorsRelativePositions.size()
+	   > toAncestorsRelativePositions.size())
+	{
+		i = fromAncestorsRelativePositions.size()
+		    - toAncestorsRelativePositions.size();
+	}
+	else
+	{
+		j = toAncestorsRelativePositions.size()
+		    - fromAncestorsRelativePositions.size();
+	}
+
+	CelestialBody const* commonAncestor(nullptr);
+	for(; i < fromAncestorsRelativePositions.size(); ++i, ++j)
+	{
+		if(fromAncestorsRelativePositions[i].first
+		   == toAncestorsRelativePositions[j].first)
+		{
+			commonAncestor = fromAncestorsRelativePositions[i].first;
+		}
+	}
+
+	// now we are in the reference frame of the common ancestor
+	// "absolute" is in this reference frame
+	Vector3 fromAbsolute(0.0, 0.0, 0.0), toAbsolute(0.0, 0.0, 0.0);
+	// gain some computation but the algorithm would world without this check
+	if(commonAncestor == nullptr)
+	{
+		fromAbsolute = from->getAbsolutePositionAtUT(uT);
+		toAbsolute   = to->getAbsolutePositionAtUT(uT);
+	}
+	else
+	{
+		for(unsigned int k(0);
+		    fromAncestorsRelativePositions[k].first != commonAncestor
+		    // add if commonAncestor can be nullptr
+		    // && i < fromAncestorsRelativePositions.size()
+		    ;
+		    ++k)
+		{
+			fromAbsolute += fromAncestorsRelativePositions[k].second;
+		}
+
+		for(unsigned int k(0);
+		    toAncestorsRelativePositions[k].first != commonAncestor
+		    // add if commonAncestor can be nullptr
+		    // && i < toAncestorsRelativePositions.size()
+		    ;
+		    ++k)
+		{
+			toAbsolute += toAncestorsRelativePositions[k].second;
+		}
+	}
+
+	return toAbsolute - fromAbsolute;
 }

@@ -74,11 +74,18 @@ class CelestialBody
 	Orbit const* getOrbit() const;
 	Orbit* getOrbit();
 	Parameters getParameters() const;
+	Vector3 getRelativePositionAtUT(UniversalTime uT) const;
 	Vector3 getAbsolutePositionAtUT(UniversalTime uT) const;
 	Vector3 getAbsoluteVelocityAtUT(UniversalTime uT) const;
 	CoordinateSystem getAttachedCoordinateSystemAtUT(UniversalTime uT) const;
 	float getPrimeMeridianSiderealTimeAtUT(UniversalTime uT) const;
 	virtual ~CelestialBody();
+
+	// Will try to get more significant digits than the awful
+	// to.absolute - from.absolute
+	static Vector3 getRelativePositionAtUt(CelestialBody const* from,
+	                                       CelestialBody const* to,
+	                                       UniversalTime uT);
 
   private:
 	CelestialBody const* parent;

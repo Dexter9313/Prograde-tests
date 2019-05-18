@@ -42,9 +42,9 @@ void OrbitalSystemRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	sortedRenderers.clear();
 	for(CelestialBodyRenderer* bodyRenderer : bodyRenderers)
 	{
-		sortedRenderers[(bodyRenderer->getDrawnBody()->getAbsolutePositionAtUT(
-		                     uT)
-		                 - camera.getAbsolutePosition())
+		sortedRenderers[camera
+		                    .getRelativePositionTo(bodyRenderer->getDrawnBody(),
+		                                           uT)
 		                    .length()]
 		    = bodyRenderer;
 		bodyRenderer->updateMesh(uT, camera);

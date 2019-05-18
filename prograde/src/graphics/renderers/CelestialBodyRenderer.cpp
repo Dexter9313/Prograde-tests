@@ -143,17 +143,8 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
 void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 {
 	model = QMatrix4x4();
-	Vector3 camRelPos;
 
-	if(camera.target == drawnBody)
-	{
-		camRelPos = -1.0 * camera.getRelativePosition();
-	}
-	else
-	{
-		camRelPos = drawnBody->getAbsolutePositionAtUT(uT)
-		            - camera.getAbsolutePosition();
-	}
+	Vector3 camRelPos = camera.getRelativePositionTo(drawnBody, uT);
 
 	double camDist(camRelPos.length());
 	double scale(centerPosition / camDist);

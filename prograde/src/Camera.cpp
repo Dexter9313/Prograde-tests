@@ -8,6 +8,15 @@ Camera::Camera(VRHandler const* vrHandler)
 	       QVector3D(0.f, 0.f, 1.f));
 }
 
+Vector3 Camera::getRelativePositionTo(CelestialBody const* body,
+                                      UniversalTime uT) const
+{
+	Vector3 targetRelPosToBody(
+	    CelestialBody::getRelativePositionAtUt(target, body, uT));
+
+	return targetRelPosToBody - relativePosition;
+}
+
 void Camera::updateUT(UniversalTime uT)
 {
 	angleAboveXY = angleAboveXY > 3.1415f / 2.f ? 3.1415f / 2.f : angleAboveXY;

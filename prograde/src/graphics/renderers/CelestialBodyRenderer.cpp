@@ -161,7 +161,16 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		radiusScale *= 1000.0 / drawnBody->getParameters().radius;
 	}
 
-	culled = camera.shouldBeCulled(position, radiusScale);
+	if(drawnBody->getParameters().outerRing == 0.f)
+	{
+		culled = camera.shouldBeCulled(position, radiusScale);
+	}
+	else
+	{
+		// take rings into account !
+		double cullingRadius(drawnBody->getParameters().outerRing * scale);
+		culled = camera.shouldBeCulled(position, cullingRadius);
+	}
 	if(culled)
 	{
 		return;

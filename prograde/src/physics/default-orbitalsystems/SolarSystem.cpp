@@ -101,7 +101,7 @@ void SolarSystem::createPlanets()
 	createChild("Jupiter", physicalParams);
 
 	// saturn
-	physicalParams.radius                 = 58232 * km;
+	physicalParams.radius                 = 58232.0 * km;
 	physicalParams.color                  = Color(255, 204, 80);
 	physicalParams.mass                   = 5.68319 * 1e26;
 	physicalParams.innerRing              = 73788.72 * km;
@@ -113,7 +113,7 @@ void SolarSystem::createPlanets()
 	createChild("Saturn", physicalParams);
 
 	// uranus
-	physicalParams.radius                 = 25362 * km;
+	physicalParams.radius                 = 25362.0 * km;
 	physicalParams.color                  = Color(180, 180, 255);
 	physicalParams.mass                   = 8.681 * 1e25;
 	physicalParams.innerRing              = 73788.72 * km;
@@ -125,7 +125,7 @@ void SolarSystem::createPlanets()
 	createChild("Uranus", physicalParams);
 
 	// neptune
-	physicalParams.radius                 = 24622 * km;
+	physicalParams.radius                 = 24622.0 * km;
 	physicalParams.color                  = Color(80, 51, 255);
 	physicalParams.mass                   = 1.0241 * 1e26;
 	physicalParams.innerRing              = 0.0;
@@ -137,7 +137,7 @@ void SolarSystem::createPlanets()
 	createChild("Neptune", physicalParams);
 
 	// pluto
-	physicalParams.radius                 = 1187 * km;
+	physicalParams.radius                 = 1187.0 * km;
 	physicalParams.color                  = Color(178, 145, 67);
 	physicalParams.mass                   = 1.30900 * 1e22;
 	physicalParams.siderealTimeAtEpoch    = 1.3928349482951936;
@@ -149,17 +149,9 @@ void SolarSystem::createPlanets()
 
 void SolarSystem::createEarthSubSystem()
 {
-	Orbit::Parameters orbitalParams;
-	(void) orbitalParams;
 	CelestialBody::Parameters physicalParams;
 
 	// moon
-	orbitalParams.inclination             = constant::pi * 5.145 / 180.f;
-	orbitalParams.ascendingNodeLongitude  = constant::pi * -11.3 / 180.f;
-	orbitalParams.periapsisArgument       = constant::pi * 114.2 / 180.f;
-	orbitalParams.eccentricity            = 0.0549;
-	orbitalParams.semiMajorAxis           = 0.00257 * au;
-	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 358.6 / 180.f;
 	physicalParams.radius                 = 1737.1 * km;
 	physicalParams.color                  = Color(100, 100, 100);
 	physicalParams.siderealTimeAtEpoch    = 0.6009311785663192;
@@ -171,17 +163,9 @@ void SolarSystem::createEarthSubSystem()
 
 void SolarSystem::createMarsSubSystem()
 {
-	Orbit::Parameters orbitalParams;
-	(void) orbitalParams;
 	CelestialBody::Parameters physicalParams;
 
 	// phobos
-	orbitalParams.inclination             = constant::pi * 26.04 / 180.f;
-	orbitalParams.ascendingNodeLongitude  = constant::pi * 0 / 180.f;
-	orbitalParams.periapsisArgument       = constant::pi * 0 / 180.f;
-	orbitalParams.eccentricity            = 0.0151;
-	orbitalParams.semiMajorAxis           = 0.00006267469 * au;
-	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 358.6 / 180.f;
 	physicalParams.radius                 = 11.2667 * km;
 	physicalParams.color                  = Color(100, 100, 100);
 	physicalParams.siderealTimeAtEpoch    = 4.023685663761321;
@@ -191,12 +175,6 @@ void SolarSystem::createMarsSubSystem()
 	createChild("Phobos", physicalParams, "Mars");
 
 	// deimos
-	orbitalParams.inclination             = constant::pi * 27.58 / 180.f;
-	orbitalParams.ascendingNodeLongitude  = constant::pi * 0 / 180.f;
-	orbitalParams.periapsisArgument       = constant::pi * 0 / 180.f;
-	orbitalParams.eccentricity            = 0.00033;
-	orbitalParams.semiMajorAxis           = 0.0001568404676 * au;
-	orbitalParams.meanAnomalyAtEpoch      = constant::pi * 358.6 / 180.f;
 	physicalParams.radius                 = 6.2 * km;
 	physicalParams.color                  = Color(170, 150, 150);
 	physicalParams.siderealTimeAtEpoch    = 5.852159600397493;

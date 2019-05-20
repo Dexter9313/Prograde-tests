@@ -57,8 +57,8 @@ class SolarSystem : public OrbitalSystem
 	void createPlutoSubSystem();
 	void createTransNeptunianSubSystem();
 
-	double au = 149597870700;
-	float km  = 1000;
+	double au = 149597870700.0;
+	float km  = 1000.f;
 };
 
 #endif // SOLARSYSTEM_HPP

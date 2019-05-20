@@ -19,6 +19,8 @@
 #ifndef PLANET_H
 #define PLANET_H
 
+#include <QtConcurrent>
+
 #include "AssetLoader.hpp"
 #include "BasicCamera.hpp"
 #include "GLHandler.hpp"
@@ -40,6 +42,7 @@ class Planet
 	void initFromTex(QString const& diffusePath, QString const& normalPath,
 	                 float atmosphere = 0.f);
 	bool updateModel(QString const& modelName);
+	void updateTextureLoading();
 
 	void initRing(float innerRing, float outerRing,
 	              QString const& texturePath = "");
@@ -54,14 +57,17 @@ class Planet
 	                 QMatrix4x4 const& properRotation);
 	void renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
 	                 QMatrix4x4 const& properRotation);
+	bool isValid() const { return valid; };
 	~Planet();
 
   private:
+	void loadParallel(QString const& path);
 	static void envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,
 	                   GLHandler::RenderTarget& renderTarget);
 
 	bool valid = false;
 	float radius;
+	float atmosphere = 0.f;
 	QVector3D oblateness;
 
 	bool normal = false;
@@ -80,6 +86,9 @@ class Planet
 	GLHandler::RenderTarget ringTexTarget = {};
 
 	static unsigned int& cubemapsSize();
+
+	// parallel QImage loading
+	std::vector<QFuture<QImage>> futures;
 };
 
 #endif // PLANET_H

@@ -100,65 +100,21 @@ void Planet::initGazGiant(QColor const& color, float bandsIntensity,
 
 void Planet::initFromTex(QString const& diffusePath)
 {
-	valid  = true;
 	shader = GLHandler::newShader("planet/planet", "planet/diffplanet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 
-	GLHandler::ShaderProgram sdiff
-	    = GLHandler::newShader("planet/planet", "planet/difftocube");
-	GLHandler::Mesh mdiff = Primitives::newUnitSphere(sdiff, 50, 50);
-
-	GLHandler::Texture tdiff
-	    = GLHandler::newTexture(diffusePath.toLatin1().data());
-
-	GLHandler::useTextures({tdiff});
-	envMap(sdiff, mdiff, cubemapDiffuse);
-
-	GLHandler::deleteTexture(tdiff);
-	GLHandler::deleteMesh(mdiff);
-	GLHandler::deleteShader(sdiff);
+	loadParallel(diffusePath);
 }
 
 void Planet::initFromTex(QString const& diffusePath, QString const& normalPath,
                          float atmosphere)
 {
-	valid  = true;
 	shader = GLHandler::newShader("planet/planet", "planet/diffnormplanet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
-	normal = true;
-	cubemapNormal = GLHandler::newRenderTarget(2048, 2048, GL_RGBA16F, true);
 
-	GLHandler::setShaderParam(shader, "diff", 0);
-	GLHandler::setShaderParam(shader, "norm", 1);
-	GLHandler::setShaderParam(shader, "atmosphere", atmosphere);
-
-	GLHandler::ShaderProgram sdiff
-	    = GLHandler::newShader("planet/planet", "planet/difftocube");
-	GLHandler::Mesh mdiff = Primitives::newUnitSphere(sdiff, 50, 50);
-
-	GLHandler::Texture tdiff
-	    = GLHandler::newTexture(diffusePath.toLatin1().data());
-
-	GLHandler::useTextures({tdiff});
-	envMap(sdiff, mdiff, cubemapDiffuse);
-
-	GLHandler::deleteTexture(tdiff);
-	GLHandler::deleteMesh(mdiff);
-	GLHandler::deleteShader(sdiff);
-
-	GLHandler::ShaderProgram snorm
-	    = GLHandler::newShader("planet/planet", "planet/normtocube");
-	GLHandler::Mesh mnorm = Primitives::newUnitSphere(snorm, 50, 50);
-
-	GLHandler::Texture tnorm
-	    = GLHandler::newTexture(normalPath.toLatin1().data(), false);
-
-	GLHandler::useTextures({tnorm});
-	envMap(snorm, mnorm, cubemapNormal);
-
-	GLHandler::deleteTexture(tnorm);
-	GLHandler::deleteMesh(mnorm);
-	GLHandler::deleteShader(snorm);
+	loadParallel(diffusePath);
+	loadParallel(normalPath);
+	this->atmosphere = atmosphere;
 }
 
 bool Planet::updateModel(QString const& modelName)
@@ -191,6 +147,62 @@ bool Planet::updateModel(QString const& modelName)
 	}
 
 	return result;
+}
+
+void Planet::updateTextureLoading()
+{
+	if(futures.empty())
+	{
+		return;
+	}
+
+	for(auto& f : futures)
+	{
+		if(!f.isFinished())
+		{
+			return;
+		}
+	}
+
+	valid = true;
+	GLHandler::setShaderParam(shader, "diff", 0);
+	GLHandler::setShaderParam(shader, "atmosphere", atmosphere);
+
+	GLHandler::ShaderProgram sdiff
+	    = GLHandler::newShader("planet/planet", "planet/difftocube");
+	GLHandler::Mesh mdiff = Primitives::newUnitSphere(sdiff, 50, 50);
+
+	GLHandler::Texture tdiff = GLHandler::newTexture(futures[0].result());
+
+	GLHandler::useTextures({tdiff});
+	envMap(sdiff, mdiff, cubemapDiffuse);
+
+	GLHandler::deleteTexture(tdiff);
+	GLHandler::deleteMesh(mdiff);
+	GLHandler::deleteShader(sdiff);
+
+	if(futures.size() > 1)
+	{
+		normal        = true;
+		cubemapNormal = GLHandler::newRenderTarget(
+		    cubemapsSize(), cubemapsSize(), GL_RGBA16F, true);
+		GLHandler::setShaderParam(shader, "norm", 1);
+
+		GLHandler::ShaderProgram snorm
+		    = GLHandler::newShader("planet/planet", "planet/normtocube");
+		GLHandler::Mesh mnorm = Primitives::newUnitSphere(snorm, 50, 50);
+
+		GLHandler::Texture tnorm
+		    = GLHandler::newTexture(futures[1].result(), false);
+
+		GLHandler::useTextures({tnorm});
+		envMap(snorm, mnorm, cubemapNormal);
+
+		GLHandler::deleteTexture(tnorm);
+		GLHandler::deleteMesh(mnorm);
+		GLHandler::deleteShader(snorm);
+	}
+	futures.clear();
 }
 
 void Planet::initRing(float innerRing, float outerRing,
@@ -352,6 +364,19 @@ void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
 	}
 	GLHandler::render(ringMesh);
 	GLHandler::endTransparent();
+}
+
+void Planet::loadParallel(QString const& path)
+{
+	futures.push_back(QtConcurrent::run([path]() {
+		QImage img;
+		if(!img.load(path))
+		{
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+			qWarning() << "Could not load Texture \"" << path << "\"" << '\n';
+		}
+		return img;
+	}));
 }
 
 void Planet::envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,

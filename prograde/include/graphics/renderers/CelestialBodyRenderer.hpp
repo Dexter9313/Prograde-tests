@@ -44,6 +44,9 @@ class CelestialBodyRenderer //: public Renderer
 	~CelestialBodyRenderer();
 
   private:
+	void loadPlanet();
+	void unloadPlanet();
+
 	CelestialBody* drawnBody;
 	float centerPosition;
 	int shaderParametersId;
@@ -55,7 +58,7 @@ class CelestialBodyRenderer //: public Renderer
 	bool culled = false;
 	double apparentAngle;
 
-	Planet planet;
+	Planet* planet   = nullptr;
 	bool customModel = false;
 	QVector3D lightpos;
 	QMatrix4x4 baseRotation;   // only align axis, no sideral time
@@ -65,8 +68,13 @@ class CelestialBodyRenderer //: public Renderer
 	GLHandler::ShaderProgram pointShader;
 	GLHandler::Mesh pointMesh;
 
+	// UNLOADED
+	GLHandler::ShaderProgram unloadedShader;
+	GLHandler::Mesh unloadedMesh;
+
 	// TEMP
 	float declinationTilt = 23.4392811 * constant::pi / 180.0;
+	QString name;
 };
 
 #endif // CELESTIALBODYDRAWER_HPP

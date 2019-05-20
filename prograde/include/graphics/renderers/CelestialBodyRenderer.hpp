@@ -52,6 +52,7 @@ class CelestialBodyRenderer //: public Renderer
 	GLHandler::Mesh mesh;
 	GLHandler::ShaderProgram shader;*/
 	QMatrix4x4 model;
+	bool culled = false;
 
 	Planet planet;
 	bool customModel = false;

@@ -142,26 +142,34 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
 
 void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 {
-	model = QMatrix4x4();
-
 	Vector3 camRelPos = camera.getRelativePositionTo(drawnBody, uT);
 
 	double camDist(camRelPos.length());
 	double scale(centerPosition / camDist);
-	model.translate(Utils::toQt(scale * camRelPos));
+
+	QVector3D position(Utils::toQt(scale * camRelPos));
 
 	double radiusScale(drawnBody->getParameters().radius * scale);
 	if(radiusScale / centerPosition < 0.002)
 	{
 		radiusScale = 0.002 * centerPosition;
 	}
-	model.scale(radiusScale);
 
 	// custom models have km units, not radius units
 	if(customModel)
 	{
-		model.scale(1000.0 / drawnBody->getParameters().radius);
+		radiusScale *= 1000.0 / drawnBody->getParameters().radius;
 	}
+
+	culled = camera.shouldBeCulled(position, radiusScale);
+	if(culled)
+	{
+		return;
+	}
+
+	model = QMatrix4x4();
+	model.translate(Utils::toQt(scale * camRelPos));
+	model.scale(radiusScale);
 
 	Vector3 bodyCenter(scale * camRelPos);
 	Vector3 centralBodyCenter(-1 * scale * camera.getAbsolutePosition());
@@ -187,6 +195,11 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 
 void CelestialBodyRenderer::render()
 {
+	if(culled)
+	{
+		return;
+	}
+
 	/*GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);*/
 	planet.renderPlanet(model, lightpos, properRotation, customModel);

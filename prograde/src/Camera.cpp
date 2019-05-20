@@ -32,3 +32,18 @@ void Camera::updateUT(UniversalTime uT)
 	lookDirection        = Utils::toQt(targetVector);
 	lookAt(QVector3D(0.f, 0.f, 0.f), lookDirection, QVector3D(0.f, 0.f, 1.f));
 }
+
+// http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-points-and-spheres/
+bool Camera::shouldBeCulled(QVector3D const& spherePosition, float radius) const
+{
+	for(unsigned int i(0); i < 6; ++i)
+	{
+		if(QVector4D::dotProduct(clippingPlanes[i],
+		                         QVector4D(spherePosition, 1.f))
+		   < -radius)
+		{
+			return true;
+		}
+	}
+	return false;
+}

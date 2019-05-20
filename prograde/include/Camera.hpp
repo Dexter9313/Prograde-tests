@@ -30,6 +30,7 @@ class Camera : public BasicCamera
   public:
 	Camera(VRHandler const* vrHandler);
 	void updateUT(UniversalTime uT);
+	bool shouldBeCulled(QVector3D const& spherePosition, float radius) const;
 	Vector3 getRelativePositionTo(CelestialBody const* body,
 	                              UniversalTime uT) const;
 	Vector3 getAbsolutePosition() const { return absolutePosition; };

@@ -21,6 +21,8 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
                                              std::string const& name)
     : drawnBody(drawnBody)
     , planet(1.f, Utils::toQt(drawnBody->getParameters().oblateness))
+    , pointShader(GLHandler::newShader("colored"))
+    , pointMesh(GLHandler::newMesh())
 {
 	/*shader = GLHandler::newShader("farcelestialbody");
 	GLHandler::setShaderParam(shader, "color",
@@ -138,6 +140,13 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
 	    planetLocalX[0], planetLocalY[0], planetLocalZ[0], 0.f, planetLocalX[1],
 	    planetLocalY[1], planetLocalZ[1], 0.f, planetLocalX[2], planetLocalY[2],
 	    planetLocalZ[2], 0.f, 0.f, 0.f, 0.f, 1.f);
+
+	// POINT
+	Color color(drawnBody->getParameters().color);
+	GLHandler::setVertices(
+	    pointMesh,
+	    {0.f, 0.f, 0.f, color.r / 255.f, color.g / 255.f, color.b / 255.f, 1.f},
+	    pointShader, {{"position", 3}, {"color", 4}});
 }
 
 void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
@@ -150,10 +159,10 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	QVector3D position(Utils::toQt(scale * camRelPos));
 
 	double radiusScale(drawnBody->getParameters().radius * scale);
-	if(radiusScale / centerPosition < 0.002)
+	/*if(radiusScale / centerPosition < 0.002)
 	{
-		radiusScale = 0.002 * centerPosition;
-	}
+	    radiusScale = 0.002 * centerPosition;
+	}*/
 
 	// custom models have km units, not radius units
 	if(customModel)
@@ -179,6 +188,13 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	model = QMatrix4x4();
 	model.translate(Utils::toQt(scale * camRelPos));
 	model.scale(radiusScale);
+
+	apparentAngle = 2.0 * atan(drawnBody->getParameters().radius / camDist);
+
+	if(apparentAngle < 0.0026)
+	{
+		return;
+	}
 
 	Vector3 bodyCenter(scale * camRelPos);
 	Vector3 centralBodyCenter(-1 * scale * camera.getAbsolutePosition());
@@ -209,6 +225,13 @@ void CelestialBodyRenderer::render()
 		return;
 	}
 
+	if(apparentAngle < 0.0026)
+	{
+		GLHandler::setUpRender(pointShader, model);
+		GLHandler::render(pointMesh);
+		return;
+	}
+
 	/*GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);*/
 	planet.renderPlanet(model, lightpos, properRotation, customModel);
@@ -219,4 +242,6 @@ CelestialBodyRenderer::~CelestialBodyRenderer()
 {
 	/*GLHandler::deleteMesh(mesh);
 	GLHandler::deleteShader(shader);*/
+	GLHandler::deleteMesh(pointMesh);
+	GLHandler::deleteShader(pointShader);
 }

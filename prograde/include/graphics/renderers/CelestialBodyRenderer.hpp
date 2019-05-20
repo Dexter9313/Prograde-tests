@@ -53,12 +53,17 @@ class CelestialBodyRenderer //: public Renderer
 	GLHandler::ShaderProgram shader;*/
 	QMatrix4x4 model;
 	bool culled = false;
+	double apparentAngle;
 
 	Planet planet;
 	bool customModel = false;
 	QVector3D lightpos;
 	QMatrix4x4 baseRotation;   // only align axis, no sideral time
 	QMatrix4x4 properRotation; // full rotation, sideral time included
+
+	// POINT
+	GLHandler::ShaderProgram pointShader;
+	GLHandler::Mesh pointMesh;
 
 	// TEMP
 	float declinationTilt = 23.4392811 * constant::pi / 180.0;

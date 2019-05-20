@@ -78,6 +78,8 @@ class Planet
 	GLHandler::ShaderProgram ringShader   = {};
 	GLHandler::Mesh ringMesh              = {};
 	GLHandler::RenderTarget ringTexTarget = {};
+
+	static unsigned int& cubemapsSize();
 };
 
 #endif // PLANET_H

@@ -18,11 +18,18 @@
 
 #include "graphics/renderers/Planet.hpp"
 
+unsigned int& Planet::cubemapsSize()
+{
+	static unsigned int cubemapsSize = 2048;
+	return cubemapsSize;
+}
+
 Planet::Planet(float radius, QVector3D const& oblateness)
     : radius(radius)
     , oblateness(oblateness)
 {
-	cubemapDiffuse = GLHandler::newRenderTarget(2048, 2048, GL_RGBA16F, true);
+	cubemapDiffuse = GLHandler::newRenderTarget(cubemapsSize(), cubemapsSize(),
+	                                            GL_RGBA16F, true);
 }
 
 void Planet::initTerrestrial(QColor const& color, float polarLatitude,
@@ -32,7 +39,8 @@ void Planet::initTerrestrial(QColor const& color, float polarLatitude,
 	shader = GLHandler::newShader("planet/planet", "planet/diffnormplanet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 	normal = true;
-	cubemapNormal = GLHandler::newRenderTarget(2048, 2048, GL_RGBA16F, true);
+	cubemapNormal = GLHandler::newRenderTarget(cubemapsSize(), cubemapsSize(),
+	                                           GL_RGBA16F, true);
 
 	GLHandler::setShaderParam(shader, "diff", 0);
 	GLHandler::setShaderParam(shader, "norm", 1);

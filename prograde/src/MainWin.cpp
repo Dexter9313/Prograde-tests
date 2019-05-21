@@ -116,7 +116,7 @@ void MainWin::initScene()
 {
 	stars.initFromFile(23.4392811 * constant::pi / 180.f);
 
-	debugText = new Text3D(1920, 1080);
+	debugText = new Text3D(192, 108);
 	debugText->setColor(QColor(255, 0, 0));
 
 	auto cam = new Camera(&vrHandler);
@@ -159,17 +159,17 @@ void MainWin::updateScene(BasicCamera& camera)
 	       << std::endl;
 	stream.precision(4);
 	stream << "UT = " << timeToStr(clock.getCurrentUt()) << std::endl;
-	stream.precision(300);
-	stream << " Raw UT = " << floor(clock.getCurrentUt() * 10) / 10
-	       << std::endl;
+	stream.precision(12);
+	stream << "Raw UT = " << floor(clock.getCurrentUt() * 10) / 10 << std::endl;
 	stream.precision(8);
 	stream << "x" << clock.getTimeCoeff();
 
 	debugText->getModel() = cam.screenToWorldTransform();
-	debugText->getModel().scale(1.98f, 3.5f);
+	debugText->getModel().translate(QVector3D(-0.9f, 0.9f, 0.f));
+	debugText->getModel().scale(0.198f, 0.35f);
 
 	timeSinceTextUpdate += frameTiming;
-	if(timeSinceTextUpdate > 0.5)
+	if(timeSinceTextUpdate > 0.2)
 	{
 		debugText->setText(stream.str().c_str());
 		timeSinceTextUpdate = 0.f;

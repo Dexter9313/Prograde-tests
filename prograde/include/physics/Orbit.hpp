@@ -84,6 +84,10 @@ class Orbit
 
 	// period is precomputed as it is often used and doesn't change
 	double period;
+
+	// cache
+	UniversalTime cacheUT;
+	Vector3 position;
 };
 
 std::ostream& operator<<(std::ostream& stream, Orbit const& orbit);

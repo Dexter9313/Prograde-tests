@@ -138,13 +138,18 @@ double Orbit::getMassiveBodyDistanceAtUT(UniversalTime uT)
 
 Vector3 Orbit::getPositionAtUT(UniversalTime uT)
 {
-	double distance(getMassiveBodyDistanceAtUT(uT)),
-	    trueAnomaly(getTrueAnomalyAtUT(uT));
+	if(uT != cacheUT)
+	{
+		double distance(getMassiveBodyDistanceAtUT(uT)),
+		    trueAnomaly(getTrueAnomalyAtUT(uT));
 
-	Vector3 position(distance, 0.0, 0.0);
-	position.rotateAlongZ(trueAnomaly + parameters.periapsisArgument);
-	position.rotateAlongX(parameters.inclination);
-	position.rotateAlongZ(parameters.ascendingNodeLongitude);
+		position.setXYZ(distance, 0.0, 0.0);
+		position.rotateAlongZ(trueAnomaly + parameters.periapsisArgument);
+		position.rotateAlongX(parameters.inclination);
+		position.rotateAlongZ(parameters.ascendingNodeLongitude);
+
+		cacheUT = uT;
+	}
 
 	return position;
 }

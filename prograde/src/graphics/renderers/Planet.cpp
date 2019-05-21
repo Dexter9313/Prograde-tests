@@ -200,7 +200,8 @@ void Planet::updateTextureLoading()
 		GLHandler::deleteMesh(mnorm);
 		GLHandler::deleteShader(snorm);
 	}
-	futures.clear();
+	futures.resize(0);
+	futures.shrink_to_fit();
 }
 
 void Planet::initRing(float innerRing, float outerRing,

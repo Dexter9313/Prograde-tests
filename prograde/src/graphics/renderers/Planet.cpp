@@ -373,8 +373,10 @@ void Planet::loadParallel(QString const& path)
 		{
 			// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 			qWarning() << "Could not load Texture \"" << path << "\"" << '\n';
+			return img;
 		}
-		return img;
+		return img.scaled(QSize(8192, 4096), Qt::IgnoreAspectRatio,
+		                  Qt::SmoothTransformation);
 	}));
 }
 

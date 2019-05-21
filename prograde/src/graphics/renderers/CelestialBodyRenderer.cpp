@@ -20,6 +20,7 @@
 CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
                                              std::string const& name)
     : drawnBody(drawnBody)
+    , boundingSphere(drawnBody->getParameters().radius)
     , pointShader(GLHandler::newShader("colored"))
     , pointMesh(GLHandler::newMesh())
     , unloadedShader(
@@ -102,7 +103,7 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 
 	if(drawnBody->getParameters().outerRing == 0.f)
 	{
-		culled = camera.shouldBeCulled(position, radiusScale);
+		culled = camera.shouldBeCulled(position, boundingSphere * scale);
 	}
 	else
 	{
@@ -257,7 +258,12 @@ void CelestialBodyRenderer::loadPlanet()
 
 	if(QFileInfo(QString("data/prograde/models/") + name + ".ply").exists())
 	{
-		customModel = planet->updateModel(name + ".ply");
+		float modelRadius(planet->updateModel(name + ".ply"));
+		customModel = (modelRadius > 0.f);
+		if(customModel)
+		{
+			boundingSphere = modelRadius * 1000.f;
+		}
 	}
 
 	// RINGS

@@ -55,6 +55,7 @@ class CelestialBodyRenderer //: public Renderer
 	GLHandler::Mesh mesh;
 	GLHandler::ShaderProgram shader;*/
 	QMatrix4x4 model;
+	float boundingSphere;
 	bool culled = false;
 	double apparentAngle;
 

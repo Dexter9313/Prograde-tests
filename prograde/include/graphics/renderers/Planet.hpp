@@ -41,7 +41,7 @@ class Planet
 	void initFromTex(QString const& diffusePath);
 	void initFromTex(QString const& diffusePath, QString const& normalPath,
 	                 float atmosphere = 0.f);
-	bool updateModel(QString const& modelName);
+	float updateModel(QString const& modelName);
 	void updateTextureLoading();
 
 	void initRing(float innerRing, float outerRing,

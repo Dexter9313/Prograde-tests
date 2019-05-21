@@ -117,18 +117,17 @@ void Planet::initFromTex(QString const& diffusePath, QString const& normalPath,
 	this->atmosphere = atmosphere;
 }
 
-bool Planet::updateModel(QString const& modelName)
+float Planet::updateModel(QString const& modelName)
 {
 	std::vector<GLHandler::Mesh> meshes;
 	std::vector<GLHandler::Texture> textures;
-	AssetLoader::loadModel(modelName, meshes, textures, shader);
+	float modelRadius(
+	    AssetLoader::loadModel(modelName, meshes, textures, shader));
 
-	bool result;
 	if(meshes.size() == 1)
 	{
 		GLHandler::deleteMesh(mesh);
-		mesh   = meshes[0];
-		result = true;
+		mesh = meshes[0];
 	}
 	else
 	{
@@ -138,7 +137,6 @@ bool Planet::updateModel(QString const& modelName)
 		{
 			GLHandler::deleteMesh(vMesh);
 		}
-		result = false;
 	}
 
 	for(auto vTex : textures)
@@ -146,7 +144,7 @@ bool Planet::updateModel(QString const& modelName)
 		GLHandler::deleteTexture(vTex);
 	}
 
-	return result;
+	return modelRadius;
 }
 
 void Planet::updateTextureLoading()

@@ -4,6 +4,10 @@ in vec3 f_position;
 in mat4 f_invrot;
 
 uniform samplerCube diff;
+uniform sampler2D texRing;
+
+uniform float innerRing;
+uniform float outerRing;
 
 uniform vec3 lightpos;
 uniform vec4 neighborsPosRadius[5];
@@ -43,6 +47,20 @@ void main()
 	}
 	// END NEIGHBORS
 
+	// RINGS SHADOW
+	float coeffRings = 1.0;
+	if(outerRing > 0.0 && sign(lightdir.z) != sign(f_position.z))
+	{
+		vec3 pointOnRings = normalize(f_position) + lightdir * abs(normalize(f_position).z / lightdir.z);
+		float alt      = length(pointOnRings);
+		if(alt >= innerRing && alt <= outerRing)
+		{
+			float texCoord = (alt - innerRing) / (outerRing - innerRing);
+			coeffRings = 1.0 - texture(texRing, vec2(texCoord, 0.5)).a;
+		}
+	}
+	// END RINGS SHADOW
+
 	outColor = diffuse;
-	outColor.rgb *= min(coeff, globalCoeffNeighbor);
+	outColor.rgb *= coeffRings * min(coeff, globalCoeffNeighbor);
 }

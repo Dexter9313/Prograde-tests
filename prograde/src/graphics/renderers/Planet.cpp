@@ -81,6 +81,8 @@ void Planet::initGazGiant(QColor const& color, float bandsIntensity,
 	shader = GLHandler::newShader("planet/planet", "planet/diffplanet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 
+	GLHandler::setShaderParam(shader, "diff", 0);
+	GLHandler::setShaderParam(shader, "texRing", 1);
 	// NOLINTNEXTLINE(cert-msc30-c, cert-msc50-c, cert-msc50-cpp)
 	float seed = 10000.f * static_cast<float>(rand()) / INT_MAX;
 
@@ -200,6 +202,10 @@ void Planet::updateTextureLoading()
 		GLHandler::deleteMesh(mnorm);
 		GLHandler::deleteShader(snorm);
 	}
+	else
+	{
+		GLHandler::setShaderParam(shader, "texRing", 1);
+	}
 	futures.resize(0);
 	futures.shrink_to_fit();
 }
@@ -211,6 +217,8 @@ void Planet::initRing(float innerRing, float outerRing,
 	ringShader = GLHandler::newShader("planet/ring");
 	ringMesh   = GLHandler::newMesh();
 
+	GLHandler::setShaderParam(shader, "innerRing", innerRing);
+	GLHandler::setShaderParam(shader, "outerRing", outerRing);
 	GLHandler::setShaderParam(ringShader, "inner", innerRing);
 	GLHandler::setShaderParam(ringShader, "outer", outerRing);
 	GLHandler::setShaderParam(ringShader, "planetradius", radius);
@@ -320,8 +328,19 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
 
 	if(!normal)
 	{
-		GLHandler::useTextures(
-		    {GLHandler::getColorAttachmentTexture(cubemapDiffuse)});
+		if(!ringTextured)
+		{
+			GLHandler::useTextures(
+			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse),
+			     GLHandler::getColorAttachmentTexture(ringTexTarget)});
+		}
+		else
+		{
+			GLHandler::useTextures(
+			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse),
+			     ringtex});
+		}
+		GLHandler::useTextures({});
 	}
 	else
 	{

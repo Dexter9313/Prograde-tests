@@ -49,8 +49,8 @@ void Planet::initTerrestrial(QColor const& color, float polarLatitude,
 	// NOLINTNEXTLINE(cert-msc30-c, cert-msc50-c, cert-msc50-cpp)
 	float seed = 10000.f * static_cast<float>(rand()) / INT_MAX;
 
-	GLHandler::ShaderProgram sdiff
-	    = GLHandler::newShader("planet/planet", "planet/terrestrialdiff");
+	GLHandler::ShaderProgram sdiff = GLHandler::newShader(
+	    "planet/planet", "planet/gentex/terrestrialdiff");
 	GLHandler::setShaderParam(sdiff, "color", color);
 	GLHandler::setShaderParam(sdiff, "polarLatitude", polarLatitude);
 	GLHandler::setShaderParam(sdiff, "seed", seed);
@@ -61,8 +61,8 @@ void Planet::initTerrestrial(QColor const& color, float polarLatitude,
 	GLHandler::deleteMesh(mdiff);
 	GLHandler::deleteShader(sdiff);
 
-	GLHandler::ShaderProgram snorm
-	    = GLHandler::newShader("planet/planet", "planet/terrestrialnorm");
+	GLHandler::ShaderProgram snorm = GLHandler::newShader(
+	    "planet/planet", "planet/gentex/terrestrialnorm");
 	GLHandler::setShaderParam(snorm, "color", color);
 	GLHandler::setShaderParam(snorm, "polarLatitude", polarLatitude);
 	GLHandler::setShaderParam(snorm, "seed", seed);
@@ -85,7 +85,7 @@ void Planet::initGazGiant(QColor const& color, float bandsIntensity,
 	float seed = 10000.f * static_cast<float>(rand()) / INT_MAX;
 
 	GLHandler::ShaderProgram sdiff
-	    = GLHandler::newShader("planet/planet", "planet/gazgiantdiff");
+	    = GLHandler::newShader("planet/planet", "planet/gentex/gazgiantdiff");
 	GLHandler::setShaderParam(sdiff, "color", color);
 	GLHandler::setShaderParam(sdiff, "bandsIntensity", bandsIntensity);
 	GLHandler::setShaderParam(sdiff, "stormsIntensity", stormsIntensity);
@@ -167,7 +167,7 @@ void Planet::updateTextureLoading()
 	GLHandler::setShaderParam(shader, "atmosphere", atmosphere);
 
 	GLHandler::ShaderProgram sdiff
-	    = GLHandler::newShader("planet/planet", "planet/difftocube");
+	    = GLHandler::newShader("planet/planet", "planet/gentex/difftocube");
 	GLHandler::Mesh mdiff = Primitives::newUnitSphere(sdiff, 50, 50);
 
 	GLHandler::Texture tdiff = GLHandler::newTexture(futures[0].result());
@@ -187,7 +187,7 @@ void Planet::updateTextureLoading()
 		GLHandler::setShaderParam(shader, "norm", 1);
 
 		GLHandler::ShaderProgram snorm
-		    = GLHandler::newShader("planet/planet", "planet/normtocube");
+		    = GLHandler::newShader("planet/planet", "planet/gentex/normtocube");
 		GLHandler::Mesh mnorm = Primitives::newUnitSphere(snorm, 50, 50);
 
 		GLHandler::Texture tnorm
@@ -270,8 +270,9 @@ void Planet::updateRing()
 		return;
 	}
 
-	GLHandler::ShaderProgram shader = GLHandler::newShader("planet/ringtex");
-	GLHandler::Mesh tmpMesh         = GLHandler::newMesh();
+	GLHandler::ShaderProgram shader
+	    = GLHandler::newShader("planet/gentex/ringtex");
+	GLHandler::Mesh tmpMesh = GLHandler::newMesh();
 	GLHandler::setVertices(tmpMesh,
 	                       {-1.f, -1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f}, shader,
 	                       {{"position", 2}});

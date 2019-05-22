@@ -148,8 +148,16 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		float parentRad(drawnBody->getParent()->getParameters().radius);
 
 		// in shader, drawnbody radius == 1.0
-		parentRelPos /= drawnBody->getParameters().radius;
-		parentRad /= drawnBody->getParameters().radius;
+		if(customModel)
+		{
+			parentRelPos /= drawnBody->getParameters().radius / 1000.f;
+			parentRad /= drawnBody->getParameters().radius / 1000.f;
+		}
+		else
+		{
+			parentRelPos /= drawnBody->getParameters().radius;
+			parentRad /= drawnBody->getParameters().radius;
+		}
 
 		neighborsPosRadius[i] = QVector4D(Utils::toQt(parentRelPos), parentRad);
 		++i;
@@ -166,8 +174,16 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		float childRad(child->getParameters().radius);
 
 		// in shader, drawnbody radius == 1.0
-		childRelPos /= drawnBody->getParameters().radius;
-		childRad /= drawnBody->getParameters().radius;
+		if(customModel)
+		{
+			childRelPos /= drawnBody->getParameters().radius / 1000.f;
+			childRad /= drawnBody->getParameters().radius / 1000.f;
+		}
+		else
+		{
+			childRelPos /= drawnBody->getParameters().radius;
+			childRad /= drawnBody->getParameters().radius;
+		}
 
 		neighborsPosRadius[i] = QVector4D(Utils::toQt(childRelPos), childRad);
 		++i;

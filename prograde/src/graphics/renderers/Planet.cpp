@@ -292,6 +292,7 @@ void Planet::updateRing()
 }
 
 void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
+                          std::array<QVector4D, 5> const& neighborsPosRadius,
                           QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	QMatrix4x4 model;
@@ -299,13 +300,17 @@ void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
 	model.translate(pos);
 	model.scale(radius);
 
-	renderPlanet(model, lightpos, properRotation, flipCoords);
+	renderPlanet(model, lightpos, neighborsPosRadius, properRotation,
+	             flipCoords);
 }
 
 void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
+                          std::array<QVector4D, 5> const& neighborsPosRadius,
                           QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	GLHandler::setShaderParam(shader, "lightpos", lightpos);
+	GLHandler::setShaderParam(shader, "neighborsPosRadius", 5,
+	                          &(neighborsPosRadius[0]));
 	GLHandler::setShaderParam(shader, "properRotation", properRotation);
 	GLHandler::setShaderParam(shader, "oblateness", oblateness);
 	if(flipCoords)

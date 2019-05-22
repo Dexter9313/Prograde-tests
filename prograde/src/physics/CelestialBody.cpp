@@ -61,6 +61,11 @@ CelestialBody const* CelestialBody::getParent() const
 	return parent;
 }
 
+std::vector<CelestialBody*> const& CelestialBody::getChildren() const
+{
+	return children;
+}
+
 CelestialBody*
     CelestialBody::createChild(Orbit::Parameters const& orbitalParams,
                                Parameters const& physicalParams)

@@ -67,6 +67,7 @@ class CelestialBody
 	              Parameters physicalParams);
 	CelestialBody(CelestialBody const& copiedBody) = default;
 	CelestialBody const* getParent() const;
+	std::vector<CelestialBody*> const& getChildren() const;
 	CelestialBody* createChild(Orbit::Parameters const& orbitalParams,
 	                           Parameters const& physicalParams);
 	CelestialBody* createChild(std::string const& childName,

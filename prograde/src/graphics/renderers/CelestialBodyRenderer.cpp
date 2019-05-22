@@ -139,6 +139,44 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	Vector3 centralBodyCenter(-1 * scale * camera.getAbsolutePosition());
 
 	lightpos = Utils::toQt(centralBodyCenter - bodyCenter);
+
+	unsigned int i(0);
+
+	if(drawnBody->getParent() != nullptr)
+	{
+		Vector3 parentRelPos(-1.0 * drawnBody->getRelativePositionAtUT(uT));
+		float parentRad(drawnBody->getParent()->getParameters().radius);
+
+		// in shader, drawnbody radius == 1.0
+		parentRelPos /= drawnBody->getParameters().radius;
+		parentRad /= drawnBody->getParameters().radius;
+
+		neighborsPosRadius[i] = QVector4D(Utils::toQt(parentRelPos), parentRad);
+		++i;
+	}
+	std::vector<CelestialBody*> const& children(drawnBody->getChildren());
+	for(auto child : children)
+	{
+		if(i >= 5)
+		{
+			break;
+		}
+		Vector3 childRelPos(
+		    CelestialBody::getRelativePositionAtUt(drawnBody, child, uT));
+		float childRad(child->getParameters().radius);
+
+		// in shader, drawnbody radius == 1.0
+		childRelPos /= drawnBody->getParameters().radius;
+		childRad /= drawnBody->getParameters().radius;
+
+		neighborsPosRadius[i] = QVector4D(Utils::toQt(childRelPos), childRad);
+		++i;
+	}
+	for(; i < 5; ++i)
+	{
+		neighborsPosRadius[i] = QVector4D(0.f, 0.f, 0.f, 0.f);
+	}
+
 	/*
 	    GLHandler::setShaderParam(shader, "bodyCenter",
 	   Utils::toQt(bodyCenter)); GLHandler::setShaderParam(shader,
@@ -179,6 +217,8 @@ void CelestialBodyRenderer::render()
 	if(apparentAngle < 0.005 || !planet->isValid())
 	{
 		GLHandler::setShaderParam(unloadedShader, "lightpos", lightpos);
+		GLHandler::setShaderParam(unloadedShader, "neighborsPosRadius", 5,
+		                          &(neighborsPosRadius[0]));
 		GLHandler::setShaderParam(unloadedShader, "properRotation",
 		                          properRotation);
 		GLHandler::setUpRender(unloadedShader, model);
@@ -188,7 +228,8 @@ void CelestialBodyRenderer::render()
 
 	/*GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);*/
-	planet->renderPlanet(model, lightpos, properRotation, customModel);
+	planet->renderPlanet(model, lightpos, neighborsPosRadius, properRotation,
+	                     customModel);
 	planet->renderRings(model, lightpos, properRotation);
 }
 

@@ -45,7 +45,7 @@ void main()
 
 	// NEIGHBORS
 	float globalCoeffNeighbor = 1.0;
-	vec3 lightdir        = normalize((f_invrot * vec4(lightpos, 1.0)).xyz);
+	vec3 lightdir             = normalize((f_invrot * vec4(lightpos, 1.0)).xyz);
 	for(int i = 0; i < 5; ++i)
 	{
 		vec3 posRelToNeighbor
@@ -61,12 +61,12 @@ void main()
 		   && dot(lightdir, posRelToNeighbor) < 0.0)
 			coeffNeighbor = pow(length(closestPoint) / neighborRadius, 500);
 
-		globalCoeffNeighbor = min(globalCoeffNeighbor, coeffNeighbor);
+		globalCoeffNeighbor *= coeffNeighbor;
 	}
 	// END NEIGHBORS
 
 	outColor = diffuse;
-	outColor.rgb *= min(coeff, globalCoeffNeighbor)
+	outColor.rgb *= coeff * globalCoeffNeighbor
 	                * min(1.0, max(0.0, coeff_pos + 0.1) * 10.0);
 
 	// Fully empirical eye-balled algorithm, FAR from accurate, no actual

@@ -49,10 +49,10 @@ void main()
 		   && dot(lightdir, posRelToNeighbor) < 0.0)
 			coeffNeighbor = pow(length(closestPoint) / neighborRadius, 500);
 
-		globalCoeffNeighbor = min(globalCoeffNeighbor, coeffNeighbor);
+		globalCoeffNeighbor *= coeffNeighbor;
 	}
 	// END NEIGHBORS
 
 	outColor = texture(tex, vec2(texCoord, 0.5));
-	outColor.rgb *= min(coeff, globalCoeffNeighbor);
+	outColor.rgb *= coeff * globalCoeffNeighbor;
 }

@@ -230,7 +230,7 @@ void CelestialBodyRenderer::render()
 	GLHandler::render(mesh);*/
 	planet->renderPlanet(model, lightpos, neighborsPosRadius, properRotation,
 	                     customModel);
-	planet->renderRings(model, lightpos, properRotation);
+	planet->renderRings(model, lightpos, neighborsPosRadius, properRotation);
 }
 
 CelestialBodyRenderer::~CelestialBodyRenderer()

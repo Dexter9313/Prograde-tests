@@ -334,6 +334,7 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
 }
 
 void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos,
+                         std::array<QVector4D, 5> const& neighborsPosRadius,
                          QMatrix4x4 const& properRotation)
 {
 	if(!rings)
@@ -343,10 +344,11 @@ void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos,
 	QMatrix4x4 ringsModel;
 	ringsModel.translate(pos);
 
-	renderRings(ringsModel, lightpos, properRotation);
+	renderRings(ringsModel, lightpos, neighborsPosRadius, properRotation);
 }
 
 void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
+                         std::array<QVector4D, 5> const& neighborsPosRadius,
                          QMatrix4x4 const& properRotation)
 {
 	if(!rings)
@@ -355,6 +357,8 @@ void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
 	}
 
 	GLHandler::setShaderParam(ringShader, "lightpos", lightpos);
+	GLHandler::setShaderParam(ringShader, "neighborsPosRadius", 5,
+	                          &(neighborsPosRadius[0]));
 	GLHandler::setShaderParam(ringShader, "properRotation", properRotation);
 	GLHandler::beginTransparent();
 	GLHandler::setUpRender(ringShader, model);

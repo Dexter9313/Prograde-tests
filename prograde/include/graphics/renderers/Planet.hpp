@@ -56,8 +56,10 @@ class Planet
 	                  QMatrix4x4 const& properRotation,
 	                  bool flipCoords = false);
 	void renderRings(QVector3D const& pos, QVector3D const& lightpos,
+	                 std::array<QVector4D, 5> const& neighborsPosRadius,
 	                 QMatrix4x4 const& properRotation);
 	void renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
+	                 std::array<QVector4D, 5> const& neighborsPosRadius,
 	                 QMatrix4x4 const& properRotation);
 	bool isValid() const { return valid; };
 	~Planet();

@@ -16,12 +16,12 @@ void main()
 
 	// NEIGHBORS
 	float globalCoeffNeighbor = 1.0;
+	vec3 lightdir        = normalize((f_invrot * vec4(lightpos, 1.0)).xyz);
 	for(int i = 0; i < 5; ++i)
 	{
 		vec3 posRelToNeighbor
 		    = f_position
 		      - (f_invrot * vec4(neighborsPosRadius[i].xyz, 1.0)).xyz;
-		vec3 lightdir        = normalize((f_invrot * vec4(lightpos, 1.0)).xyz);
 		float neighborRadius = neighborsPosRadius[i].w;
 
 		vec3 closestPoint = dot(lightdir, -1 * posRelToNeighbor) * lightdir

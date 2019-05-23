@@ -106,7 +106,7 @@ void Planet::initFromTex(QString const& diffusePath)
 	shader = GLHandler::newShader("planet/planet", "planet/diffplanet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 
-	loadParallel(diffusePath);
+	loadParallel(diffusePath, 0);
 }
 
 void Planet::initFromTex(QString const& diffusePath, QString const& normalPath,
@@ -115,8 +115,8 @@ void Planet::initFromTex(QString const& diffusePath, QString const& normalPath,
 	shader = GLHandler::newShader("planet/planet", "planet/diffnormplanet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 
-	loadParallel(diffusePath);
-	loadParallel(normalPath);
+	loadParallel(diffusePath, 0);
+	loadParallel(normalPath, 1);
 	this->atmosphere = atmosphere;
 }
 
@@ -174,7 +174,8 @@ void Planet::updateTextureLoading()
 	    = GLHandler::newShader("planet/planet", "planet/gentex/difftocube");
 	GLHandler::Mesh mdiff = Primitives::newUnitSphere(sdiff, 50, 50);
 
-	GLHandler::Texture tdiff = GLHandler::newTexture(futures[0].result());
+	GLHandler::Texture tdiff = GLHandler::copyPBOToTex(pbos[0]);
+	GLHandler::deletePixelBufferObject(pbos[0]);
 
 	GLHandler::useTextures({tdiff});
 	envMap(sdiff, mdiff, cubemapDiffuse);
@@ -194,8 +195,8 @@ void Planet::updateTextureLoading()
 		    = GLHandler::newShader("planet/planet", "planet/gentex/normtocube");
 		GLHandler::Mesh mnorm = Primitives::newUnitSphere(snorm, 50, 50);
 
-		GLHandler::Texture tnorm
-		    = GLHandler::newTexture(futures[1].result(), false);
+		GLHandler::Texture tnorm = GLHandler::copyPBOToTex(pbos[1], false);
+		GLHandler::deletePixelBufferObject(pbos[1]);
 
 		GLHandler::useTextures({tnorm});
 		envMap(snorm, mnorm, cubemapNormal);
@@ -406,18 +407,23 @@ void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
 	GLHandler::endTransparent();
 }
 
-void Planet::loadParallel(QString const& path)
+void Planet::loadParallel(QString const& path, unsigned int index)
 {
-	futures.push_back(QtConcurrent::run([path]() {
+	pbos[index] = GLHandler::newPixelBufferObject(8192, 4096);
+	unsigned char* data(pbos[index].mappedData);
+
+	futures.push_back(QtConcurrent::run([path, data]() {
 		QImage img;
 		if(!img.load(path))
 		{
 			// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 			qWarning() << "Could not load Texture \"" << path << "\"" << '\n';
-			return img;
+			return;
 		}
-		return img.scaled(QSize(8192, 4096), Qt::IgnoreAspectRatio,
-		                  Qt::SmoothTransformation);
+		img = img.scaled(QSize(8192, 4096), Qt::IgnoreAspectRatio,
+		                 Qt::SmoothTransformation)
+		          .convertToFormat(QImage::Format_RGBA8888);
+		std::memcpy(data, img.bits(), std::size_t(img.byteCount()));
 	}));
 }
 

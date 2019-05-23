@@ -65,7 +65,7 @@ class Planet
 	~Planet();
 
   private:
-	void loadParallel(QString const& path);
+	void loadParallel(QString const& path, unsigned int index);
 	static void envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,
 	                   GLHandler::RenderTarget& renderTarget);
 
@@ -92,7 +92,9 @@ class Planet
 	static unsigned int& cubemapsSize();
 
 	// parallel QImage loading
-	std::vector<QFuture<QImage>> futures;
+	std::vector<QFuture<void>> futures;
+
+	GLHandler::PixelBufferObject pbos[2];
 };
 
 #endif // PLANET_H

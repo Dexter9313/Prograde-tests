@@ -43,7 +43,8 @@ void Planet::initTerrestrial(QColor const& color, float polarLatitude,
 	                                           GL_RGBA16F, true);
 
 	GLHandler::setShaderParam(shader, "diff", 0);
-	GLHandler::setShaderParam(shader, "norm", 1);
+	GLHandler::setShaderParam(shader, "texRing", 1);
+	GLHandler::setShaderParam(shader, "norm", 2);
 	GLHandler::setShaderParam(shader, "atmosphere", atmosphere);
 
 	// NOLINTNEXTLINE(cert-msc30-c, cert-msc50-c, cert-msc50-cpp)
@@ -166,6 +167,7 @@ void Planet::updateTextureLoading()
 
 	valid = true;
 	GLHandler::setShaderParam(shader, "diff", 0);
+	GLHandler::setShaderParam(shader, "texRing", 1);
 	GLHandler::setShaderParam(shader, "atmosphere", atmosphere);
 
 	GLHandler::ShaderProgram sdiff
@@ -186,7 +188,7 @@ void Planet::updateTextureLoading()
 		normal        = true;
 		cubemapNormal = GLHandler::newRenderTarget(
 		    cubemapsSize(), cubemapsSize(), GL_RGBA16F, true);
-		GLHandler::setShaderParam(shader, "norm", 1);
+		GLHandler::setShaderParam(shader, "norm", 2);
 
 		GLHandler::ShaderProgram snorm
 		    = GLHandler::newShader("planet/planet", "planet/gentex/normtocube");
@@ -344,9 +346,19 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
 	}
 	else
 	{
-		GLHandler::useTextures(
-		    {GLHandler::getColorAttachmentTexture(cubemapDiffuse),
-		     GLHandler::getColorAttachmentTexture(cubemapNormal)});
+		if(!ringTextured)
+		{
+			GLHandler::useTextures(
+			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse),
+			     GLHandler::getColorAttachmentTexture(ringTexTarget),
+			     GLHandler::getColorAttachmentTexture(cubemapNormal)});
+		}
+		else
+		{
+			GLHandler::useTextures(
+			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse), ringtex,
+			     GLHandler::getColorAttachmentTexture(cubemapNormal)});
+		}
 	}
 	GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);

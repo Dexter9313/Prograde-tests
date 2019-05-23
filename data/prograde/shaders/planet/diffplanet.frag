@@ -31,7 +31,7 @@ void main()
 	for(int i = 0; i < 5; ++i)
 	{
 		vec3 posRelToNeighbor
-		    = f_position
+		    = normalize(f_position)
 		      - (f_invrot * vec4(neighborsPosRadius[i].xyz, 1.0)).xyz;
 		float neighborRadius = neighborsPosRadius[i].w;
 

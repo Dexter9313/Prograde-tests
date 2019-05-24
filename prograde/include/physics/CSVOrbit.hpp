@@ -20,6 +20,7 @@
 #define CSVORBIT_HPP
 
 #include <QDir>
+#include <QSettings>
 #include <map>
 #include <string>
 

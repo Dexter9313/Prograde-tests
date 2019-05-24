@@ -24,7 +24,8 @@ CSVOrbit::CSVOrbit(MassiveBodyMass const& massiveBodyMass,
             Parameters({0.f, 0.f, 0.f, 0.f, 1.f, 0.f}))
     , bodyName(bodyName)
 {
-	QString path("data/prograde/physics/orbital-params/");
+	QString path(QSettings().value("simulation/planetsystemdir").toString()
+	             + "/orbital-params/");
 	path += bodyName.c_str();
 
 	QDir csvdir(path);

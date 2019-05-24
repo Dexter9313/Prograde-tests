@@ -25,5 +25,11 @@ ProgradeSettings::ProgradeSettings(QWidget* parent)
 	addDateTimeSetting("starttime", QDateTime().currentDateTimeUtc(),
 	                   tr("Start time (UTC)"));
 
+	addDirPathSetting(
+	    "planetsystemdir",
+	    QFileInfo(QSettings().fileName()).absoluteDir().absolutePath()
+	        + "/systems/",
+	    tr("Planetary System Root Directory"));
+
 	setCurrentIndex(0);
 }

@@ -253,24 +253,28 @@ void CelestialBodyRenderer::loadPlanet()
 	    = new Planet(1.f, Utils::toQt(drawnBody->getParameters().oblateness));
 
 	QString diffuse(""), normal("");
-	QString str(QString("data/prograde/images/") + name + "/diffuse.jpg");
+	QString str(QSettings().value("simulation/planetsystemdir").toString()
+	            + "/images/" + name + "/diffuse.jpg");
 	if(QFileInfo(str).exists())
 	{
 		diffuse = str;
 	}
-	str = QString("data/prograde/images/") + name + "/diffuse.png";
+	str = QSettings().value("simulation/planetsystemdir").toString()
+	      + "/images/" + name + "/diffuse.png";
 	if(QFileInfo(str).exists())
 	{
 		diffuse = str;
 	}
 	if(diffuse != "")
 	{
-		str = QString("data/prograde/images/") + name + "/normal.jpg";
+		str = QSettings().value("simulation/planetsystemdir").toString()
+		      + "/images/" + name + "/normal.jpg";
 		if(QFileInfo(str).exists())
 		{
 			normal = str;
 		}
-		str = QString("data/prograde/images/") + name + "/normal.png";
+		str = QSettings().value("simulation/planetsystemdir").toString()
+		      + "/images/" + name + "/normal.png";
 		if(QFileInfo(str).exists())
 		{
 			normal = str;
@@ -295,9 +299,13 @@ void CelestialBodyRenderer::loadPlanet()
 		planet->initTerrestrial(Utils::toQt(drawnBody->getParameters().color));
 	}
 
-	if(QFileInfo(QString("data/prograde/models/") + name + ".ply").exists())
+	if(QFileInfo(QSettings().value("simulation/planetsystemdir").toString()
+	             + "/models/" + name + ".ply")
+	       .exists())
 	{
-		float modelRadius(planet->updateModel(name + ".ply"));
+		float modelRadius(planet->updateModel(
+		    QSettings().value("simulation/planetsystemdir").toString()
+		    + "/models/" + name + ".ply"));
 		customModel = (modelRadius > 0.f);
 		if(customModel)
 		{
@@ -313,12 +321,14 @@ void CelestialBodyRenderer::loadPlanet()
 		float innerRing(drawnBody->getParameters().innerRing);
 		float radius(drawnBody->getParameters().radius);
 		QString rings;
-		str = QString("data/prograde/images/") + name + "/rings.jpg";
+		str = QSettings().value("simulation/planetsystemdir").toString()
+		      + "images/" + name + "/rings.jpg";
 		if(QFileInfo(str).exists())
 		{
 			rings = str;
 		}
-		str = QString("data/prograde/images/") + name + "/rings.png";
+		str = QSettings().value("simulation/planetsystemdir").toString()
+		      + "images/" + name + "/rings.png";
 		if(QFileInfo(str).exists())
 		{
 			rings = str;

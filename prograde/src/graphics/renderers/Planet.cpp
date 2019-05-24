@@ -399,7 +399,7 @@ void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
 	GLHandler::setShaderParam(ringShader, "lightpos", lightpos);
 	GLHandler::setShaderParam(ringShader, "neighborsPosRadius", 5,
 	                          &(neighborsPosRadius[0]));
-	GLHandler::setShaderParam(shader, "neighborsOblateness", 5,
+	GLHandler::setShaderParam(ringShader, "neighborsOblateness", 5,
 	                          &(neighborsOblateness[0]));
 	GLHandler::setShaderParam(ringShader, "properRotation", properRotation);
 	GLHandler::beginTransparent();

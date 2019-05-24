@@ -42,7 +42,7 @@ class CSVOrbit : public Orbit
 	static double interpolateAngleAlwaysForward(double before, double after,
 	                                            double frac);
 
-	std::map<uint64_t, Orbit::Parameters> parametersHistory;
+	std::map<int64_t, Orbit::Parameters> parametersHistory;
 	std::string bodyName;
 };
 

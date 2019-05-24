@@ -62,7 +62,7 @@ CSVOrbit::CSVOrbit(MassiveBodyMass const& massiveBodyMass,
 
 void CSVOrbit::updateParameters(UniversalTime uT)
 {
-	uint64_t day(static_cast<uint64_t>(uT) / static_cast<uint64_t>(24 * 3600));
+	int64_t day(static_cast<int64_t>(uT) / static_cast<int64_t>(24 * 3600));
 	if(uT < 0.0)
 	{
 		--day;

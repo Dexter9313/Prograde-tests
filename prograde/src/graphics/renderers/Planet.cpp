@@ -430,32 +430,10 @@ void Planet::loadParallel(QString const& path, unsigned int index)
 void Planet::envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,
                     GLHandler::RenderTarget& renderTarget)
 {
-	QMatrix4x4 perspective;
-	perspective.perspective(90.f, 1.f, 0.1f, 10.f);
-
-	std::vector<QVector3D> vecs = {
-	    QVector3D(1, 0, 0),  QVector3D(0, -1, 0), QVector3D(-1, 0, 0),
-	    QVector3D(0, -1, 0), QVector3D(0, 1, 0),  QVector3D(0, 0, 1),
-	    QVector3D(0, -1, 0), QVector3D(0, 0, -1), QVector3D(0, 0, -1),
-	    QVector3D(0, -1, 0), QVector3D(0, 0, 1),  QVector3D(0, -1, 0),
-	};
-
-	std::vector<GLHandler::CubeFace> faces = {
-	    GLHandler::CubeFace::FRONT,  GLHandler::CubeFace::BACK,
-	    GLHandler::CubeFace::LEFT,   GLHandler::CubeFace::RIGHT,
-	    GLHandler::CubeFace::BOTTOM, GLHandler::CubeFace::TOP,
-	};
-
-	for(unsigned int i(0); i < 6; ++i)
-	{
-		QMatrix4x4 cubeCamera;
-		cubeCamera.lookAt(QVector3D(0, 0, 0), vecs[2 * i], vecs[(2 * i) + 1]);
-		QMatrix4x4 c = perspective * cubeCamera;
-		GLHandler::setUpTransforms(c, c, c, c, c);
-		GLHandler::beginRendering(renderTarget, faces[i]);
+	GLHandler::generateEnvironmentMap(renderTarget, [shader, mesh]() {
 		GLHandler::setUpRender(shader);
 		GLHandler::render(mesh);
-	}
+	});
 }
 
 Planet::~Planet()

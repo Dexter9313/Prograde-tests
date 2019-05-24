@@ -148,15 +148,7 @@ void MainWin::updateScene(BasicCamera& camera)
 	       << orbitalSystem->getAllCelestialBodiesNames()[bodyTracked]
 	       << std::endl;
 	stream.precision(10);
-	stream << "Distance : "
-	       << (cam.getAbsolutePosition()
-	           - orbitalSystem->getAllCelestialBodiesPointers()[bodyTracked]
-	                 ->getAbsolutePositionAtUT(clock.getCurrentUt()))
-	                  .length()
-	              - orbitalSystem->getAllCelestialBodiesPointers()[bodyTracked]
-	                    ->getParameters()
-	                    .radius
-	       << std::endl;
+	stream << "Distance : " << cam.distance << std::endl;
 	stream.precision(4);
 	stream << "UT = " << timeToStr(clock.getCurrentUt()) << std::endl;
 	stream.precision(12);

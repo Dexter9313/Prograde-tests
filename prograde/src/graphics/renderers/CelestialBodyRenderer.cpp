@@ -28,18 +28,6 @@ CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
     , unloadedMesh(Primitives::newUnitSphere(unloadedShader, 50, 50))
     , name(name.c_str())
 {
-	/*shader = GLHandler::newShader("farcelestialbody");
-	GLHandler::setShaderParam(shader, "color",
-	                          Utils::toQt(drawnBody->getParameters().color));
-
-	mesh = Primitives::newUnitSphere(shader, 100, 100);*/
-
-	// node = scene->addSphereSceneNode(this->drawnBody->getParameters().radius,
-	// 64, 0, -1);
-	// node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-	// node->setMaterialType(FarCelestialBodyShader::getInstance()->getMaterialType());
-	// this->scnMgr->getMeshManipulator()->setVertexColors(mesh->getMesh(),
-	// toIrrlicht(this->drawnBody->getParameters().color));
 	model = QMatrix4x4();
 	model.translate(Utils::toQt(this->drawnBody->getAbsolutePositionAtUT(0)));
 
@@ -90,10 +78,6 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	QVector3D position(Utils::toQt(scale * camRelPos));
 
 	double radiusScale(drawnBody->getParameters().radius * scale);
-	/*if(radiusScale / centerPosition < 0.002)
-	{
-	    radiusScale = 0.002 * centerPosition;
-	}*/
 
 	// custom models have km units, not radius units
 	if(customModel)
@@ -193,12 +177,6 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		neighborsPosRadius[i] = QVector4D(0.f, 0.f, 0.f, 0.f);
 	}
 
-	/*
-	    GLHandler::setShaderParam(shader, "bodyCenter",
-	   Utils::toQt(bodyCenter)); GLHandler::setShaderParam(shader,
-	   "centralBodyCenter", Utils::toQt(centralBodyCenter));
-	*/
-
 	// custom models have (1, 0, 0) at planetographic origin
 	// non custom have (-1, 0, 0) at planetographic origin
 	float siderealTime = drawnBody->getPrimeMeridianSiderealTimeAtUT(uT)
@@ -242,8 +220,6 @@ void CelestialBodyRenderer::render()
 		return;
 	}
 
-	/*GLHandler::setUpRender(shader, model);
-	GLHandler::render(mesh);*/
 	planet->renderPlanet(model, lightpos, neighborsPosRadius, properRotation,
 	                     customModel);
 	planet->renderRings(model, lightpos, neighborsPosRadius, properRotation);
@@ -251,8 +227,6 @@ void CelestialBodyRenderer::render()
 
 CelestialBodyRenderer::~CelestialBodyRenderer()
 {
-	/*GLHandler::deleteMesh(mesh);
-	GLHandler::deleteShader(shader);*/
 	GLHandler::deleteMesh(pointMesh);
 	GLHandler::deleteShader(pointShader);
 	GLHandler::deleteMesh(unloadedMesh);

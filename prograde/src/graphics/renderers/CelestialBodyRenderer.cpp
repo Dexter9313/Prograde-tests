@@ -215,6 +215,10 @@ void CelestialBodyRenderer::render()
 
 	if(apparentAngle < 0.005 || !planet->isValid())
 	{
+		if(customModel)
+		{
+			model.scale(drawnBody->getParameters().radius / 1000.0);
+		}
 		GLHandler::setShaderParam(unloadedShader, "lightpos", lightpos);
 		GLHandler::setShaderParam(unloadedShader, "neighborsPosRadius", 5,
 		                          &(neighborsPosRadius[0]));

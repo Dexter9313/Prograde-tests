@@ -366,6 +366,7 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
 			     GLHandler::getColorAttachmentTexture(cubemapNormal)});
 		}
 	}
+
 	GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);
 }
@@ -441,8 +442,10 @@ void Planet::envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,
                     GLHandler::RenderTarget& renderTarget)
 {
 	GLHandler::generateEnvironmentMap(renderTarget, [shader, mesh]() {
+		GLHandler::setBackfaceCulling(false);
 		GLHandler::setUpRender(shader);
 		GLHandler::render(mesh);
+		GLHandler::setBackfaceCulling(true);
 	});
 }
 

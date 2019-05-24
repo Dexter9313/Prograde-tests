@@ -66,6 +66,8 @@ class CelestialBodyRenderer //: public Renderer
 	QMatrix4x4 properRotation; // full rotation, sideral time included
 	std::array<QVector4D, 5>
 	    neighborsPosRadius; // 3D position + radius of 5 closest neighbors
+	std::array<QVector3D, 5>
+	    neighborsOblateness; // oblateness of 5 closest neighbors
 
 	// POINT
 	GLHandler::ShaderProgram pointShader;

@@ -144,6 +144,8 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		}
 
 		neighborsPosRadius[i] = QVector4D(Utils::toQt(parentRelPos), parentRad);
+		neighborsOblateness[i] = QVector3D(
+		    Utils::toQt(drawnBody->getParent()->getParameters().oblateness));
 		++i;
 	}
 	std::vector<CelestialBody*> const& children(drawnBody->getChildren());
@@ -170,11 +172,14 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		}
 
 		neighborsPosRadius[i] = QVector4D(Utils::toQt(childRelPos), childRad);
+		neighborsOblateness[i]
+		    = QVector3D(Utils::toQt(child->getParameters().oblateness));
 		++i;
 	}
 	for(; i < 5; ++i)
 	{
-		neighborsPosRadius[i] = QVector4D(0.f, 0.f, 0.f, 0.f);
+		neighborsPosRadius[i]  = QVector4D(0.f, 0.f, 0.f, 0.f);
+		neighborsOblateness[i] = QVector3D(1.f, 1.f, 1.f);
 	}
 
 	// custom models have (1, 0, 0) at planetographic origin
@@ -213,6 +218,8 @@ void CelestialBodyRenderer::render()
 		GLHandler::setShaderParam(unloadedShader, "lightpos", lightpos);
 		GLHandler::setShaderParam(unloadedShader, "neighborsPosRadius", 5,
 		                          &(neighborsPosRadius[0]));
+		GLHandler::setShaderParam(unloadedShader, "neighborsOblateness", 5,
+		                          &(neighborsOblateness[0]));
 		GLHandler::setShaderParam(unloadedShader, "properRotation",
 		                          properRotation);
 		GLHandler::setUpRender(unloadedShader, model);
@@ -220,9 +227,10 @@ void CelestialBodyRenderer::render()
 		return;
 	}
 
-	planet->renderPlanet(model, lightpos, neighborsPosRadius, properRotation,
-	                     customModel);
-	planet->renderRings(model, lightpos, neighborsPosRadius, properRotation);
+	planet->renderPlanet(model, lightpos, neighborsPosRadius,
+	                     neighborsOblateness, properRotation, customModel);
+	planet->renderRings(model, lightpos, neighborsPosRadius,
+	                    neighborsOblateness, properRotation);
 }
 
 CelestialBodyRenderer::~CelestialBodyRenderer()

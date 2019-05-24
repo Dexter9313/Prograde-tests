@@ -3,29 +3,34 @@
 in vec3 f_position;
 in mat4 f_invrot;
 
+uniform vec3 oblateness = vec3(1.0, 1.0, 1.0);
 uniform vec3 color;
 uniform vec3 lightpos;
 uniform vec4 neighborsPosRadius[5];
+uniform vec3 neighborsOblateness[5];
 
 out vec4 outColor;
 
 void main()
 {
-	float coeff = max(0.0, dot(normalize((f_invrot * vec4(lightpos, 1.0)).xyz),
-	                           normalize(f_position)));
+	vec3 pos      = normalize(f_position) * oblateness;
+	vec3 norm     = normalize(normalize(f_position) / oblateness);
+	vec3 lightdir = normalize((f_invrot * vec4(lightpos, 1.0)).xyz);
+
+	float coeff = max(0.0, dot(lightdir, norm));
 
 	// NEIGHBORS
 	float globalCoeffNeighbor = 1.0;
-	vec3 lightdir             = normalize((f_invrot * vec4(lightpos, 1.0)).xyz);
 	for(int i = 0; i < 5; ++i)
 	{
 		vec3 posRelToNeighbor
-		    = normalize(f_position)
-		      - (f_invrot * vec4(neighborsPosRadius[i].xyz, 1.0)).xyz;
+		    = pos - (f_invrot * vec4(neighborsPosRadius[i].xyz, 1.0)).xyz;
 		float neighborRadius = neighborsPosRadius[i].w;
 
 		vec3 closestPoint = dot(lightdir, -1 * posRelToNeighbor) * lightdir
 		                    + posRelToNeighbor;
+
+		closestPoint /= neighborsOblateness[i];
 
 		float coeffNeighbor = 1.0;
 		if(length(closestPoint) < neighborRadius

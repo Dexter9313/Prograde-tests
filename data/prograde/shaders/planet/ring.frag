@@ -8,8 +8,10 @@ uniform sampler2D tex;
 uniform float inner;
 uniform float outer;
 uniform float planetradius;
+uniform vec3 planetoblateness = vec3(1.0, 1.0, 1.0);
 uniform vec3 lightpos;
 uniform vec4 neighborsPosRadius[5];
+uniform vec3 neighborsOblateness[5];
 
 out vec4 outColor;
 
@@ -27,6 +29,8 @@ void main()
 	vec3 closestPoint = dot(lightdir, -1 * vec3(f_position, 0.0)) * lightdir
 	                    + vec3(f_position, 0.0);
 
+	closestPoint /= planetoblateness;
+
 	float coeff = 1.0;
 	if(length(closestPoint) < planetradius
 	   && dot(lightdir, vec3(f_position, 0.0)) < 0.0)
@@ -43,6 +47,8 @@ void main()
 
 		vec3 closestPoint = dot(lightdir, -1 * posRelToNeighbor) * lightdir
 		                    + posRelToNeighbor;
+
+		closestPoint /= neighborsOblateness[i];
 
 		float coeffNeighbor = 1.0;
 		if(length(closestPoint) < neighborRadius

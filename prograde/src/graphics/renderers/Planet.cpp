@@ -225,6 +225,7 @@ void Planet::initRing(float innerRing, float outerRing,
 	GLHandler::setShaderParam(ringShader, "inner", innerRing);
 	GLHandler::setShaderParam(ringShader, "outer", outerRing);
 	GLHandler::setShaderParam(ringShader, "planetradius", radius);
+	GLHandler::setShaderParam(ringShader, "planetoblateness", oblateness);
 
 	float coeff(1.f / cos(3.1415 / 20.0));
 
@@ -304,6 +305,7 @@ void Planet::updateRing()
 
 void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
                           std::array<QVector4D, 5> const& neighborsPosRadius,
+                          std::array<QVector3D, 5> const& neighborsOblateness,
                           QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	QMatrix4x4 model;
@@ -311,17 +313,20 @@ void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
 	model.translate(pos);
 	model.scale(radius);
 
-	renderPlanet(model, lightpos, neighborsPosRadius, properRotation,
-	             flipCoords);
+	renderPlanet(model, lightpos, neighborsPosRadius, neighborsOblateness,
+	             properRotation, flipCoords);
 }
 
 void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
                           std::array<QVector4D, 5> const& neighborsPosRadius,
+                          std::array<QVector3D, 5> const& neighborsOblateness,
                           QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	GLHandler::setShaderParam(shader, "lightpos", lightpos);
 	GLHandler::setShaderParam(shader, "neighborsPosRadius", 5,
 	                          &(neighborsPosRadius[0]));
+	GLHandler::setShaderParam(shader, "neighborsOblateness", 5,
+	                          &(neighborsOblateness[0]));
 	GLHandler::setShaderParam(shader, "properRotation", properRotation);
 	GLHandler::setShaderParam(shader, "oblateness", oblateness);
 	if(flipCoords)
@@ -367,6 +372,7 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
 
 void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos,
                          std::array<QVector4D, 5> const& neighborsPosRadius,
+                         std::array<QVector3D, 5> const& neighborsOblateness,
                          QMatrix4x4 const& properRotation)
 {
 	if(!rings)
@@ -376,11 +382,13 @@ void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos,
 	QMatrix4x4 ringsModel;
 	ringsModel.translate(pos);
 
-	renderRings(ringsModel, lightpos, neighborsPosRadius, properRotation);
+	renderRings(ringsModel, lightpos, neighborsPosRadius, neighborsOblateness,
+	            properRotation);
 }
 
 void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
                          std::array<QVector4D, 5> const& neighborsPosRadius,
+                         std::array<QVector3D, 5> const& neighborsOblateness,
                          QMatrix4x4 const& properRotation)
 {
 	if(!rings)
@@ -391,6 +399,8 @@ void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
 	GLHandler::setShaderParam(ringShader, "lightpos", lightpos);
 	GLHandler::setShaderParam(ringShader, "neighborsPosRadius", 5,
 	                          &(neighborsPosRadius[0]));
+	GLHandler::setShaderParam(shader, "neighborsOblateness", 5,
+	                          &(neighborsOblateness[0]));
 	GLHandler::setShaderParam(ringShader, "properRotation", properRotation);
 	GLHandler::beginTransparent();
 	GLHandler::setUpRender(ringShader, model);

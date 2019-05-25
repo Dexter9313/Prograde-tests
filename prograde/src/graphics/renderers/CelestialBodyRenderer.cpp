@@ -103,6 +103,11 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	model = QMatrix4x4();
 	model.translate(Utils::toQt(scale * camRelPos));
 	model.scale(radiusScale);
+	if(customModel
+	   && (apparentAngle < 0.005 || (planet != nullptr && !planet->isValid())))
+	{
+		model.scale(drawnBody->getParameters().radius / 1000.0);
+	}
 
 	apparentAngle = 2.0 * atan(drawnBody->getParameters().radius / camDist);
 
@@ -215,10 +220,6 @@ void CelestialBodyRenderer::render()
 
 	if(apparentAngle < 0.005 || !planet->isValid())
 	{
-		if(customModel)
-		{
-			model.scale(drawnBody->getParameters().radius / 1000.0);
-		}
 		GLHandler::setShaderParam(unloadedShader, "lightpos", lightpos);
 		GLHandler::setShaderParam(unloadedShader, "neighborsPosRadius", 5,
 		                          &(neighborsPosRadius[0]));

@@ -326,13 +326,13 @@ void CelestialBodyRenderer::loadPlanet()
 		float radius(drawnBody->getParameters().radius);
 		QString rings;
 		str = QSettings().value("simulation/planetsystemdir").toString()
-		      + "images/" + name + "/rings.jpg";
+		      + "/images/" + name + "/rings.jpg";
 		if(QFileInfo(str).exists())
 		{
 			rings = str;
 		}
 		str = QSettings().value("simulation/planetsystemdir").toString()
-		      + "images/" + name + "/rings.png";
+		      + "/images/" + name + "/rings.png";
 		if(QFileInfo(str).exists())
 		{
 			rings = str;

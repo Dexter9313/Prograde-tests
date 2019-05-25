@@ -414,8 +414,10 @@ void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
 	{
 		GLHandler::useTextures({ringtex});
 	}
+	GLHandler::setBackfaceCulling(false);
 	GLHandler::render(ringMesh);
 	GLHandler::endTransparent();
+	GLHandler::setBackfaceCulling(true);
 }
 
 void Planet::loadParallel(QString const& path, unsigned int index)

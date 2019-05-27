@@ -286,7 +286,7 @@ void Planet::updateRing()
 	    = GLHandler::newShader("planet/gentex/ringtex");
 	GLHandler::Mesh tmpMesh = GLHandler::newMesh();
 	GLHandler::setVertices(tmpMesh,
-	                       {-1.f, -1.f, -1.f, 1.f, 1.f, -1.f, 1.f, 1.f}, shader,
+	                       {-1.f, -1.f, 1.f, -1.f, -1.f, 1.f, 1.f, 1.f}, shader,
 	                       {{"position", 2}});
 
 	GLHandler::setShaderParam(shader, "color", QColor(210, 180, 140));

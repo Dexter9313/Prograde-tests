@@ -95,19 +95,6 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		double cullingRadius(drawnBody->getParameters().outerRing * scale);
 		culled = camera.shouldBeCulled(position, cullingRadius);
 	}
-	if(culled)
-	{
-		return;
-	}
-
-	model = QMatrix4x4();
-	model.translate(Utils::toQt(scale * camRelPos));
-	model.scale(radiusScale);
-	if(customModel
-	   && (apparentAngle < 0.005 || (planet != nullptr && !planet->isValid())))
-	{
-		model.scale(drawnBody->getParameters().radius / 1000.0);
-	}
 
 	apparentAngle = 2.0 * atan(drawnBody->getParameters().radius / camDist);
 
@@ -122,6 +109,19 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	else
 	{
 		loadPlanet();
+	}
+	if(culled)
+	{
+		return;
+	}
+
+	model = QMatrix4x4();
+	model.translate(Utils::toQt(scale * camRelPos));
+	model.scale(radiusScale);
+	if(customModel
+	   && (apparentAngle < 0.005 || (planet != nullptr && !planet->isValid())))
+	{
+		model.scale(drawnBody->getParameters().radius / 1000.0);
 	}
 
 	Vector3 bodyCenter(scale * camRelPos);

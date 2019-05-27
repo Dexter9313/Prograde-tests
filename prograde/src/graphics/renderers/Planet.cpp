@@ -306,25 +306,24 @@ void Planet::updateRing()
 		return;
 	}
 
-	GLHandler::ShaderProgram shader
-	    = GLHandler::newShader("planet/gentex/ringtex");
-	GLHandler::Mesh tmpMesh = GLHandler::newMesh();
+	GLHandler::ShaderProgram s = GLHandler::newShader("planet/gentex/ringtex");
+	GLHandler::Mesh tmpMesh    = GLHandler::newMesh();
 	GLHandler::setVertices(tmpMesh,
-	                       {-1.f, -1.f, 1.f, -1.f, -1.f, 1.f, 1.f, 1.f}, shader,
+	                       {-1.f, -1.f, 1.f, -1.f, -1.f, 1.f, 1.f, 1.f}, s,
 	                       {{"position", 2}});
 
-	GLHandler::setShaderParam(shader, "color", QColor(210, 180, 140));
+	GLHandler::setShaderParam(s, "color", QColor(210, 180, 140));
 	GLHandler::setShaderParam(
-	    shader, "seed",
+	    s, "seed",
 	    // NOLINTNEXTLINE(cert-msc30-c, cert-msc50-c, cert-msc50-cpp)
 	    10000.f * static_cast<float>(rand()) / INT_MAX);
 
 	GLHandler::beginRendering(ringTexTarget);
-	GLHandler::useShader(shader);
+	GLHandler::useShader(s);
 	GLHandler::render(tmpMesh, GLHandler::PrimitiveType::TRIANGLE_STRIP);
 
 	GLHandler::deleteMesh(tmpMesh);
-	GLHandler::deleteShader(shader);
+	GLHandler::deleteShader(s);
 }
 
 void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,

@@ -120,34 +120,9 @@ void Planet::initFromTex(QString const& diffusePath, QString const& normalPath,
 	this->atmosphere = atmosphere;
 }
 
-float Planet::updateModel(QString const& modelName)
+void Planet::updateModel(QString const& modelName)
 {
-	std::vector<GLHandler::Mesh> meshes;
-	std::vector<GLHandler::Texture> textures;
-	float modelRadius(
-	    AssetLoader::loadModel(modelName, meshes, textures, shader));
-
-	if(meshes.size() == 1)
-	{
-		GLHandler::deleteMesh(mesh);
-		mesh = meshes[0];
-	}
-	else
-	{
-		std::cerr << "Error : Cannot import " << modelName.toStdString()
-		          << "... " << meshes.size() << " models read." << std::endl;
-		for(auto vMesh : meshes)
-		{
-			GLHandler::deleteMesh(vMesh);
-		}
-	}
-
-	for(auto vTex : textures)
-	{
-		GLHandler::deleteTexture(vTex);
-	}
-
-	return modelRadius;
+	loadModelParallel(modelName);
 }
 
 void Planet::updateTextureLoading()
@@ -211,6 +186,55 @@ void Planet::updateTextureLoading()
 	}
 	futures.resize(0);
 	futures.shrink_to_fit();
+}
+
+float Planet::updateModelLoading()
+{
+	if(!modelIsLoading)
+	{
+		return lastSphereVal;
+	}
+
+	if(!modelFuture.isFinished())
+	{
+		return lastSphereVal;
+	}
+
+	modelIsLoading = false;
+
+	lastSphereVal = modelFuture.result();
+
+	std::vector<GLHandler::Mesh> meshes;
+	std::vector<GLHandler::Texture> textures;
+	AssetLoader::loadModel(loadedVertices, loadedIndices, loadedTexs, meshes,
+	                       textures, shader);
+
+	if(meshes.size() == 1)
+	{
+		GLHandler::deleteMesh(mesh);
+		mesh = meshes[0];
+	}
+	else
+	{
+		for(auto vMesh : meshes)
+		{
+			GLHandler::deleteMesh(vMesh);
+		}
+	}
+
+	for(auto vTex : textures)
+	{
+		GLHandler::deleteTexture(vTex);
+	}
+
+	loadedVertices.resize(0);
+	loadedVertices.shrink_to_fit();
+	loadedIndices.resize(0);
+	loadedIndices.shrink_to_fit();
+	loadedTexs.resize(0);
+	loadedTexs.shrink_to_fit();
+
+	return lastSphereVal;
 }
 
 void Planet::initRing(float innerRing, float outerRing,
@@ -438,6 +462,15 @@ void Planet::loadParallel(QString const& path, unsigned int index)
 		          .convertToFormat(QImage::Format_RGBA8888);
 		std::memcpy(data, img.bits(), std::size_t(img.byteCount()));
 	}));
+}
+
+void Planet::loadModelParallel(QString const& path)
+{
+	modelIsLoading = true;
+	modelFuture    = QtConcurrent::run([path, this]() {
+        return AssetLoader::loadFile(path, loadedVertices, loadedIndices,
+                                     loadedTexs);
+    });
 }
 
 void Planet::envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,

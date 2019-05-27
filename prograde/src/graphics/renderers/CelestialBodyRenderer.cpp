@@ -201,6 +201,12 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	if(planet != nullptr)
 	{
 		planet->updateTextureLoading();
+		float modelRadius(planet->updateModelLoading());
+		customModel = (modelRadius > 0.f);
+		if(customModel)
+		{
+			boundingSphere = modelRadius * 1000.f;
+		}
 	}
 }
 
@@ -308,14 +314,9 @@ void CelestialBodyRenderer::loadPlanet()
 	             + "/models/" + name + ".ply")
 	       .exists())
 	{
-		float modelRadius(planet->updateModel(
+		planet->updateModel(
 		    QSettings().value("simulation/planetsystemdir").toString()
-		    + "/models/" + name + ".ply"));
-		customModel = (modelRadius > 0.f);
-		if(customModel)
-		{
-			boundingSphere = modelRadius * 1000.f;
-		}
+		    + "/models/" + name + ".ply");
 	}
 
 	// RINGS

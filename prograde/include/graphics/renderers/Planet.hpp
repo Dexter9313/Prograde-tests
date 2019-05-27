@@ -41,8 +41,9 @@ class Planet
 	void initFromTex(QString const& diffusePath);
 	void initFromTex(QString const& diffusePath, QString const& normalPath,
 	                 float atmosphere = 0.f);
-	float updateModel(QString const& modelName);
+	void updateModel(QString const& modelName);
 	void updateTextureLoading();
+	float updateModelLoading();
 
 	void initRing(float innerRing, float outerRing,
 	              QString const& texturePath = "");
@@ -65,11 +66,12 @@ class Planet
 	                 std::array<QVector4D, 5> const& neighborsPosRadius,
 	                 std::array<QVector3D, 5> const& neighborsOblateness,
 	                 QMatrix4x4 const& properRotation);
-	bool isValid() const { return valid; };
+	bool isValid() const { return valid && !modelIsLoading; };
 	~Planet();
 
   private:
 	void loadParallel(QString const& path, unsigned int index);
+	void loadModelParallel(QString const& path);
 	static void envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,
 	                   GLHandler::RenderTarget& renderTarget);
 
@@ -97,6 +99,14 @@ class Planet
 
 	// parallel QImage loading
 	std::vector<QFuture<void>> futures;
+
+	// parallel Model loading
+	bool modelIsLoading = false;
+	float lastSphereVal = 0.f;
+	QFuture<float> modelFuture;
+	std::vector<std::vector<float>> loadedVertices;
+	std::vector<std::vector<unsigned int>> loadedIndices;
+	std::vector<std::string> loadedTexs;
 
 	GLHandler::PixelBufferObject pbos[2];
 };

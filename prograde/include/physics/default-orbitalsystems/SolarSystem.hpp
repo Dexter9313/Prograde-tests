@@ -19,6 +19,9 @@
 #ifndef SOLARSYSTEM_HPP
 #define SOLARSYSTEM_HPP
 
+#include <QCoreApplication>
+#include <QProgressDialog>
+
 #include "math/constants.hpp"
 
 #include "../OrbitalSystem.hpp"
@@ -59,6 +62,13 @@ class SolarSystem : public OrbitalSystem
 
 	double au = 149597870700.0;
 	float km  = 1000.f;
+
+	// TEMP
+	QProgressDialog* progress;
+	const unsigned int bodiesNb = 38;
+	unsigned int current        = 0;
+
+	void updateProgress();
 };
 
 #endif // SOLARSYSTEM_HPP

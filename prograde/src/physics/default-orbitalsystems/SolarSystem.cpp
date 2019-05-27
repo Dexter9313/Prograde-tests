@@ -23,6 +23,8 @@ float sunRadius = 696342.f * 1000;
 SolarSystem::SolarSystem()
     : OrbitalSystem(sunMass, sunRadius)
 {
+	progress = new QProgressDialog(QObject::tr("Loading Solar System..."),
+	                               QString(), 0, bodiesNb);
 	createPlanets();
 	createEarthSubSystem();
 	createMarsSubSystem();
@@ -33,6 +35,7 @@ SolarSystem::SolarSystem()
 	createNeptuneSubSystem();
 	createPlutoSubSystem();
 	createTransNeptunianSubSystem();
+	delete progress;
 }
 
 void SolarSystem::createPlanets()
@@ -50,6 +53,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 281.01 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 61.45 / 180.f;
 	createChild("Mercury", physicalParams);
+	updateProgress();
 
 	// venus
 	physicalParams.radius = (6051.8 + 50.0) * km; // add atmosphere
@@ -62,6 +66,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 92.76 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * -67.16 / 180.f;
 	createChild("Venus", physicalParams);
+	updateProgress();
 
 	// earth
 	physicalParams.radius = 6378.1 * km;
@@ -74,6 +79,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 0.0 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 90.0 / 180.f;
 	createChild("Earth", physicalParams);
+	updateProgress();
 
 	// mars
 	physicalParams.radius = 3396.2 * km;
@@ -86,6 +92,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 317.68143 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 52.88650 / 180.f;
 	createChild("Mars", physicalParams);
+	updateProgress();
 
 	// jupiter
 	physicalParams.radius = 71492.0 * km;
@@ -104,6 +111,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
 	createChild("Jupiter", physicalParams);
+	updateProgress();
 
 	// saturn
 	physicalParams.radius = 60268.0 * km;
@@ -118,6 +126,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Saturn", physicalParams);
 	physicalParams.oblateness.setXYZ(1.0, 1.0, 1.0);
+	updateProgress();
 
 	// uranus
 	physicalParams.radius = 25559.0 * km;
@@ -131,6 +140,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 77.311 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 15.175 / 180.f;
 	createChild("Uranus", physicalParams);
+	updateProgress();
 
 	// neptune
 	physicalParams.radius = 24764.0 * km;
@@ -144,6 +154,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 299.3 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 42.950 / 180.f;
 	createChild("Neptune", physicalParams);
+	updateProgress();
 
 	// pluto
 	physicalParams.radius = 1187.0 * km;
@@ -155,6 +166,7 @@ void SolarSystem::createPlanets()
 	physicalParams.northPoleRightAsc      = constant::pi * 132.993 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * -6.163 / 180.f;
 	createChild("Pluto", physicalParams);
+	updateProgress();
 }
 
 void SolarSystem::createEarthSubSystem()
@@ -170,6 +182,7 @@ void SolarSystem::createEarthSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 266.86 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 65.64 / 180.f;
 	createChild("Moon", physicalParams, "Earth");
+	updateProgress();
 }
 
 void SolarSystem::createMarsSubSystem()
@@ -184,6 +197,7 @@ void SolarSystem::createMarsSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 270.0 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 66.5 / 180.f;
 	createChild("Phobos", physicalParams, "Mars");
+	updateProgress();
 
 	// deimos
 	physicalParams.radius                 = 6.2 * km;
@@ -193,6 +207,7 @@ void SolarSystem::createMarsSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 270.0 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 66.5 / 180.f;
 	createChild("Deimos", physicalParams, "Mars");
+	updateProgress();
 }
 
 void SolarSystem::createAsteroidBeltSubSystem()
@@ -208,6 +223,7 @@ void SolarSystem::createAsteroidBeltSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 291.42744 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 66.764 / 180.f;
 	createChild("Ceres", physicalParams);
+	updateProgress();
 
 	// pallas
 	physicalParams.radius                 = 256.0 * km;
@@ -218,6 +234,7 @@ void SolarSystem::createAsteroidBeltSubSystem()
 	physicalParams.northPoleRightAsc    = constant::pi * 0.0 / 180.f;
 	physicalParams.northPoleDeclination = constant::pi * 10.0 / 180.f;
 	createChild("Pallas", physicalParams);
+	updateProgress();
 
 	// juno
 	physicalParams.radius = 135.7 * km;
@@ -229,6 +246,7 @@ void SolarSystem::createAsteroidBeltSubSystem()
 	physicalParams.northPoleRightAsc    = constant::pi * 0.0 / 180.f;
 	physicalParams.northPoleDeclination = constant::pi * 10.0 / 180.f;
 	createChild("Juno", physicalParams);
+	updateProgress();
 
 	// vesta
 	physicalParams.radius = 262.7 * km;
@@ -239,6 +257,7 @@ void SolarSystem::createAsteroidBeltSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 308.0 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 48.0 / 180.f;
 	createChild("Vesta", physicalParams);
+	updateProgress();
 }
 
 void SolarSystem::createJupiterSubSystem()
@@ -253,6 +272,7 @@ void SolarSystem::createJupiterSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
 	createChild("Io", physicalParams, "Jupiter");
+	updateProgress();
 
 	// europa
 	physicalParams.radius                 = 1560.8 * km;
@@ -262,6 +282,7 @@ void SolarSystem::createJupiterSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
 	createChild("Europa", physicalParams, "Jupiter");
+	updateProgress();
 
 	// ganymede
 	physicalParams.radius                 = 2634.1 * km;
@@ -271,6 +292,7 @@ void SolarSystem::createJupiterSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
 	createChild("Ganymede", physicalParams, "Jupiter");
+	updateProgress();
 
 	// callisto
 	physicalParams.radius                 = 2410.3 * km;
@@ -280,6 +302,7 @@ void SolarSystem::createJupiterSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 268.057 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 64.495 / 180.f;
 	createChild("Callisto", physicalParams, "Jupiter");
+	updateProgress();
 }
 
 void SolarSystem::createSaturnSubSystem()
@@ -294,6 +317,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Mimas", physicalParams, "Saturn");
+	updateProgress();
 
 	// enceladus
 	physicalParams.radius                 = 252.1 * km;
@@ -303,6 +327,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Enceladus", physicalParams, "Saturn");
+	updateProgress();
 
 	// tethys
 	physicalParams.radius                 = 531.1 * km;
@@ -312,6 +337,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Tethys", physicalParams, "Saturn");
+	updateProgress();
 
 	// dione
 	physicalParams.radius                 = 561.9 * km;
@@ -321,6 +347,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Dione", physicalParams, "Saturn");
+	updateProgress();
 
 	// rhea
 	physicalParams.radius                 = 763.8 * km;
@@ -330,6 +357,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Rhea", physicalParams, "Saturn");
+	updateProgress();
 
 	// titan
 	physicalParams.radius = 2574.73 * km;
@@ -340,6 +368,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Titan", physicalParams, "Saturn");
+	updateProgress();
 
 	// hyperion
 	physicalParams.radius = 135.0 * km;
@@ -352,6 +381,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc    = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination = constant::pi * 10.537 / 180.f;
 	createChild("Hyperion", physicalParams, "Saturn");
+	updateProgress();
 
 	// iapetus
 	physicalParams.radius                 = 734.5 * km;
@@ -361,6 +391,7 @@ void SolarSystem::createSaturnSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 40.589 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 83.537 / 180.f;
 	createChild("Iapetus", physicalParams, "Saturn");
+	updateProgress();
 }
 
 void SolarSystem::createUranusSubSystem()
@@ -376,6 +407,7 @@ void SolarSystem::createUranusSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 77.311 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 15.175 / 180.f;
 	createChild("Miranda", physicalParams, "Uranus");
+	updateProgress();
 
 	// ariel
 	physicalParams.radius = 579.5 * km;
@@ -386,6 +418,7 @@ void SolarSystem::createUranusSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 77.311 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 15.175 / 180.f;
 	createChild("Ariel", physicalParams, "Uranus");
+	updateProgress();
 
 	// umbriel
 	physicalParams.radius = 584.7 * km;
@@ -396,6 +429,7 @@ void SolarSystem::createUranusSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 77.311 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 15.175 / 180.f;
 	createChild("Umbriel", physicalParams, "Uranus");
+	updateProgress();
 
 	// titania
 	physicalParams.radius = 788.4 * km;
@@ -406,6 +440,7 @@ void SolarSystem::createUranusSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 77.311 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 15.175 / 180.f;
 	createChild("Titania", physicalParams, "Uranus");
+	updateProgress();
 
 	// oberon
 	physicalParams.radius = 761.4 * km;
@@ -416,6 +451,7 @@ void SolarSystem::createUranusSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 77.311 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 15.175 / 180.f;
 	createChild("Oberon", physicalParams, "Uranus");
+	updateProgress();
 }
 
 void SolarSystem::createNeptuneSubSystem()
@@ -431,6 +467,7 @@ void SolarSystem::createNeptuneSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 119.3 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * -42.950 / 180.f;
 	createChild("Triton", physicalParams, "Neptune");
+	updateProgress();
 }
 
 void SolarSystem::createPlutoSubSystem()
@@ -446,6 +483,7 @@ void SolarSystem::createPlutoSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 132.993 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * -6.163 / 180.f;
 	createChild("Charon", physicalParams, "Pluto");
+	updateProgress();
 }
 
 void SolarSystem::createTransNeptunianSubSystem()
@@ -463,6 +501,7 @@ void SolarSystem::createTransNeptunianSubSystem()
 	physicalParams.northPoleRightAsc      = constant::pi * 0.0 / 180.f;
 	physicalParams.northPoleDeclination   = constant::pi * 90.0 / 180.f;
 	createChild("Eris", physicalParams);
+	updateProgress();
 
 	// makemake
 	physicalParams.radius = 725.0 * km;
@@ -473,6 +512,7 @@ void SolarSystem::createTransNeptunianSubSystem()
 	// physicalParams.northPoleRightAsc      = constant::pi * / 180.f;
 	// physicalParams.northPoleDeclination   = constant::pi * / 180.f;
 	createChild("Makemake", physicalParams);
+	updateProgress();
 
 	// haumea
 	physicalParams.radius = 960.0 * km;
@@ -489,4 +529,12 @@ void SolarSystem::createTransNeptunianSubSystem()
 
 	physicalParams.innerRing = 0.0;
 	physicalParams.outerRing = 0.0;
+	updateProgress();
+}
+
+void SolarSystem::updateProgress()
+{
+	++current;
+	QCoreApplication::processEvents();
+	progress->setValue(current);
 }

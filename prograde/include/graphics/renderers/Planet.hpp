@@ -23,10 +23,11 @@
 
 #include "AssetLoader.hpp"
 #include "BasicCamera.hpp"
-#include "GLHandler.hpp"
 #include "Primitives.hpp"
 
 #include "math/constants.hpp"
+
+#include "graphics/renderers/Rings.hpp"
 
 class Planet
 {
@@ -45,27 +46,16 @@ class Planet
 	void updateTextureLoading(bool cancelLoading = false);
 	float updateModelLoading();
 
-	void initRing(float innerRing, float outerRing,
-	              QString const& texturePath = "");
-	void updateRing();
-	void renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
-	                  std::array<QVector4D, 5> const& neighborsPosRadius,
-	                  std::array<QVector3D, 5> const& neighborsOblateness,
-	                  QMatrix4x4 const& properRotation,
-	                  bool flipCoords = false);
-	void renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
-	                  std::array<QVector4D, 5> const& neighborsPosRadius,
-	                  std::array<QVector3D, 5> const& neighborsOblateness,
-	                  QMatrix4x4 const& properRotation,
-	                  bool flipCoords = false);
-	void renderRings(QVector3D const& pos, QVector3D const& lightpos,
-	                 std::array<QVector4D, 5> const& neighborsPosRadius,
-	                 std::array<QVector3D, 5> const& neighborsOblateness,
-	                 QMatrix4x4 const& properRotation);
-	void renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
-	                 std::array<QVector4D, 5> const& neighborsPosRadius,
-	                 std::array<QVector3D, 5> const& neighborsOblateness,
-	                 QMatrix4x4 const& properRotation);
+	void initRings(float innerRing, float outerRing,
+	               QString const& texturePath = "");
+	void render(QVector3D const& pos, QVector3D const& lightpos,
+	            std::array<QVector4D, 5> const& neighborsPosRadius,
+	            std::array<QVector3D, 5> const& neighborsOblateness,
+	            QMatrix4x4 const& properRotation, bool flipCoords = false);
+	void render(QMatrix4x4 const& model, QVector3D const& lightpos,
+	            std::array<QVector4D, 5> const& neighborsPosRadius,
+	            std::array<QVector3D, 5> const& neighborsOblateness,
+	            QMatrix4x4 const& properRotation, bool flipCoords = false);
 	bool isValid() const { return valid && !modelIsLoading; };
 	~Planet();
 
@@ -87,13 +77,7 @@ class Planet
 	GLHandler::RenderTarget cubemapDiffuse;
 	GLHandler::RenderTarget cubemapNormal;
 
-	bool rings                 = false;
-	bool ringTextured          = false;
-	GLHandler::Texture ringtex = {};
-
-	GLHandler::ShaderProgram ringShader   = {};
-	GLHandler::Mesh ringMesh              = {};
-	GLHandler::RenderTarget ringTexTarget = {};
+	Rings* rings = nullptr;
 
 	static unsigned int& cubemapsSize();
 

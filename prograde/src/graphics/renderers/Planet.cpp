@@ -250,113 +250,32 @@ float Planet::updateModelLoading()
 	return lastSphereVal;
 }
 
-void Planet::initRing(float innerRing, float outerRing,
-                      QString const& texturePath)
+void Planet::initRings(float innerRing, float outerRing,
+                       QString const& texturePath)
 {
-	rings      = true;
-	ringShader = GLHandler::newShader("planet/ring");
-	ringMesh   = GLHandler::newMesh();
-
+	rings = new Rings(innerRing, outerRing, radius, oblateness, texturePath);
 	GLHandler::setShaderParam(shader, "innerRing", innerRing);
 	GLHandler::setShaderParam(shader, "outerRing", outerRing);
-	GLHandler::setShaderParam(ringShader, "inner", innerRing);
-	GLHandler::setShaderParam(ringShader, "outer", outerRing);
-	GLHandler::setShaderParam(ringShader, "planetradius", radius);
-	GLHandler::setShaderParam(ringShader, "planetoblateness", oblateness);
-
-	float coeff(1.f / cos(3.1415 / 20.0));
-
-	std::vector<float> ringVertices;
-	std::vector<unsigned int> ringElements;
-	for(unsigned int i(0); i < 20; ++i)
-	{
-		// 2 * i
-		ringVertices.push_back(innerRing * cos(i * 3.1415f / 10.f));
-		ringVertices.push_back(innerRing * sin(i * 3.1415f / 10.f));
-
-		// 2 * i + 1
-		ringVertices.push_back(outerRing * coeff * cos(i * 3.1415f / 10.f));
-		ringVertices.push_back(outerRing * coeff * sin(i * 3.1415f / 10.f));
-
-		if(i != 0)
-		{
-			ringElements.push_back(2 * (i - 1));
-			ringElements.push_back(2 * (i - 1) + 1);
-			ringElements.push_back(2 * i + 1);
-
-			ringElements.push_back(2 * (i - 1));
-			ringElements.push_back(2 * i + 1);
-			ringElements.push_back(2 * i);
-		}
-	}
-	ringElements.push_back(2 * (20 - 1));
-	ringElements.push_back(2 * (20 - 1) + 1);
-	ringElements.push_back(1);
-
-	ringElements.push_back(2 * (20 - 1));
-	ringElements.push_back(1);
-	ringElements.push_back(0);
-
-	GLHandler::setVertices(ringMesh, ringVertices, ringShader,
-	                       {{"position", 2}}, ringElements);
-
-	if(texturePath == "")
-	{
-		ringTexTarget = GLHandler::newRenderTarget(16000, 1);
-		updateRing();
-	}
-	else
-	{
-		ringTextured = true;
-		ringtex      = GLHandler::newTexture(texturePath.toLatin1().data());
-	}
 }
 
-void Planet::updateRing()
-{
-	if(ringTextured)
-	{
-		return;
-	}
-
-	GLHandler::ShaderProgram s = GLHandler::newShader("planet/gentex/ringtex");
-	GLHandler::Mesh tmpMesh    = GLHandler::newMesh();
-	GLHandler::setVertices(tmpMesh,
-	                       {-1.f, -1.f, 1.f, -1.f, -1.f, 1.f, 1.f, 1.f}, s,
-	                       {{"position", 2}});
-
-	GLHandler::setShaderParam(s, "color", QColor(210, 180, 140));
-	GLHandler::setShaderParam(
-	    s, "seed",
-	    // NOLINTNEXTLINE(cert-msc30-c, cert-msc50-c, cert-msc50-cpp)
-	    10000.f * static_cast<float>(rand()) / INT_MAX);
-
-	GLHandler::beginRendering(ringTexTarget);
-	GLHandler::useShader(s);
-	GLHandler::render(tmpMesh, GLHandler::PrimitiveType::TRIANGLE_STRIP);
-
-	GLHandler::deleteMesh(tmpMesh);
-	GLHandler::deleteShader(s);
-}
-
-void Planet::renderPlanet(QVector3D const& pos, QVector3D const& lightpos,
-                          std::array<QVector4D, 5> const& neighborsPosRadius,
-                          std::array<QVector3D, 5> const& neighborsOblateness,
-                          QMatrix4x4 const& properRotation, bool flipCoords)
+void Planet::render(QVector3D const& pos, QVector3D const& lightpos,
+                    std::array<QVector4D, 5> const& neighborsPosRadius,
+                    std::array<QVector3D, 5> const& neighborsOblateness,
+                    QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	QMatrix4x4 model;
 
 	model.translate(pos);
 	model.scale(radius);
 
-	renderPlanet(model, lightpos, neighborsPosRadius, neighborsOblateness,
-	             properRotation, flipCoords);
+	render(model, lightpos, neighborsPosRadius, neighborsOblateness,
+	       properRotation, flipCoords);
 }
 
-void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
-                          std::array<QVector4D, 5> const& neighborsPosRadius,
-                          std::array<QVector3D, 5> const& neighborsOblateness,
-                          QMatrix4x4 const& properRotation, bool flipCoords)
+void Planet::render(QMatrix4x4 const& model, QVector3D const& lightpos,
+                    std::array<QVector4D, 5> const& neighborsPosRadius,
+                    std::array<QVector3D, 5> const& neighborsOblateness,
+                    QMatrix4x4 const& properRotation, bool flipCoords)
 {
 	GLHandler::setShaderParam(shader, "lightpos", lightpos);
 	GLHandler::setShaderParam(shader, "neighborsPosRadius", 5,
@@ -370,90 +289,31 @@ void Planet::renderPlanet(QMatrix4x4 const& model, QVector3D const& lightpos,
 		GLHandler::setShaderParam(shader, "flipCoords", QVector2D(-1.f, -1.f));
 	}
 
-	if(!normal)
+	std::vector<GLHandler::Texture> textures;
+	textures.push_back(GLHandler::getColorAttachmentTexture(cubemapDiffuse));
+	if(rings != nullptr)
 	{
-		if(!ringTextured)
-		{
-			GLHandler::useTextures(
-			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse),
-			     GLHandler::getColorAttachmentTexture(ringTexTarget)});
-		}
-		else
-		{
-			GLHandler::useTextures(
-			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse),
-			     ringtex});
-		}
-		GLHandler::useTextures({});
+		textures.push_back(rings->getTexture());
 	}
 	else
 	{
-		if(!ringTextured)
-		{
-			GLHandler::useTextures(
-			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse),
-			     GLHandler::getColorAttachmentTexture(ringTexTarget),
-			     GLHandler::getColorAttachmentTexture(cubemapNormal)});
-		}
-		else
-		{
-			GLHandler::useTextures(
-			    {GLHandler::getColorAttachmentTexture(cubemapDiffuse), ringtex,
-			     GLHandler::getColorAttachmentTexture(cubemapNormal)});
-		}
+		textures.push_back({});
 	}
 
+	if(normal)
+	{
+		textures.push_back(GLHandler::getColorAttachmentTexture(cubemapNormal));
+	}
+
+	GLHandler::useTextures(textures);
 	GLHandler::setUpRender(shader, model);
 	GLHandler::render(mesh);
-}
 
-void Planet::renderRings(QVector3D const& pos, QVector3D const& lightpos,
-                         std::array<QVector4D, 5> const& neighborsPosRadius,
-                         std::array<QVector3D, 5> const& neighborsOblateness,
-                         QMatrix4x4 const& properRotation)
-{
-	if(!rings)
+	if(rings != nullptr)
 	{
-		return;
+		rings->render(model, lightpos, neighborsPosRadius, neighborsOblateness,
+		              properRotation);
 	}
-	QMatrix4x4 ringsModel;
-	ringsModel.translate(pos);
-
-	renderRings(ringsModel, lightpos, neighborsPosRadius, neighborsOblateness,
-	            properRotation);
-}
-
-void Planet::renderRings(QMatrix4x4 const& model, QVector3D const& lightpos,
-                         std::array<QVector4D, 5> const& neighborsPosRadius,
-                         std::array<QVector3D, 5> const& neighborsOblateness,
-                         QMatrix4x4 const& properRotation)
-{
-	if(!rings)
-	{
-		return;
-	}
-
-	GLHandler::setShaderParam(ringShader, "lightpos", lightpos);
-	GLHandler::setShaderParam(ringShader, "neighborsPosRadius", 5,
-	                          &(neighborsPosRadius[0]));
-	GLHandler::setShaderParam(ringShader, "neighborsOblateness", 5,
-	                          &(neighborsOblateness[0]));
-	GLHandler::setShaderParam(ringShader, "properRotation", properRotation);
-	GLHandler::beginTransparent();
-	GLHandler::setUpRender(ringShader, model);
-	if(!ringTextured)
-	{
-		GLHandler::useTextures(
-		    {GLHandler::getColorAttachmentTexture(ringTexTarget)});
-	}
-	else
-	{
-		GLHandler::useTextures({ringtex});
-	}
-	GLHandler::setBackfaceCulling(false);
-	GLHandler::render(ringMesh);
-	GLHandler::endTransparent();
-	GLHandler::setBackfaceCulling(true);
 }
 
 void Planet::loadParallel(QString const& path, unsigned int index)
@@ -515,17 +375,8 @@ Planet::~Planet()
 	GLHandler::deleteMesh(mesh);
 	GLHandler::deleteShader(shader);
 
-	if(rings)
+	if(rings != nullptr)
 	{
-		GLHandler::deleteMesh(ringMesh);
-		GLHandler::deleteShader(ringShader);
-		if(!ringTextured)
-		{
-			GLHandler::deleteRenderTarget(ringTexTarget);
-		}
-		else
-		{
-			GLHandler::deleteTexture(ringtex);
-		}
+		delete rings;
 	}
 }

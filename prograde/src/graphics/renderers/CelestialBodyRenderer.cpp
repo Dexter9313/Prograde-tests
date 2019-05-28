@@ -238,10 +238,8 @@ void CelestialBodyRenderer::render()
 		return;
 	}
 
-	planet->renderPlanet(model, lightpos, neighborsPosRadius,
-	                     neighborsOblateness, properRotation, customModel);
-	planet->renderRings(model, lightpos, neighborsPosRadius,
-	                    neighborsOblateness, properRotation);
+	planet->render(model, lightpos, neighborsPosRadius, neighborsOblateness,
+	               properRotation, customModel);
 }
 
 CelestialBodyRenderer::~CelestialBodyRenderer()
@@ -340,7 +338,7 @@ void CelestialBodyRenderer::loadPlanet()
 			rings = str;
 		}
 
-		planet->initRing(innerRing / radius, outerRing / radius, rings);
+		planet->initRings(innerRing / radius, outerRing / radius, rings);
 	}
 }
 

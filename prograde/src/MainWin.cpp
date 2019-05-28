@@ -155,6 +155,15 @@ void MainWin::updateScene(BasicCamera& camera)
 	stream << "Raw UT = " << floor(clock.getCurrentUt() * 10) / 10 << std::endl;
 	stream.precision(8);
 	stream << "x" << clock.getTimeCoeff();
+	/*
+	// GPU memory usage
+	stream << std::endl << std::endl;
+	stream << "Render Targets count : " << GLHandler::renderTargetCount() <<
+	std::endl; stream << "Shaders count : " << GLHandler::shaderCount() <<
+	std::endl; stream << "Meshs count : " << GLHandler::meshCount() <<
+	std::endl; stream << "Textures count : " << GLHandler::texCount() <<
+	std::endl; stream << "PBOs count : " << GLHandler::PBOCount() << std::endl;
+	*/
 
 	debugText->getModel() = cam.screenToWorldTransform();
 	debugText->getModel().translate(QVector3D(-0.9f, 0.9f, 0.f));

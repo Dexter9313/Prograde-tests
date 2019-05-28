@@ -184,7 +184,7 @@ std::ostream& Orbit::displayAsText(std::ostream& stream) const
 	stream << "\tMean Anomaly At Epoch : " << parameters.meanAnomalyAtEpoch
 	       << std::endl;
 	stream << "]" << std::endl;
-	std::cout << period << std::endl;
+	stream << period << std::endl;
 
 	return stream;
 }

@@ -322,7 +322,7 @@ void CelestialBodyRenderer::loadPlanet()
 	// RINGS
 
 	float outerRing(drawnBody->getParameters().outerRing);
-	if(drawnBody->getParameters().outerRing != 0.f)
+	if(outerRing != 0.f)
 	{
 		float innerRing(drawnBody->getParameters().innerRing);
 		float radius(drawnBody->getParameters().radius);
@@ -340,15 +340,7 @@ void CelestialBodyRenderer::loadPlanet()
 			rings = str;
 		}
 
-		if(rings != "")
-		{
-			planet->initRing(innerRing / radius, outerRing / radius, rings);
-		}
-		else
-		{
-			planet->initRing(drawnBody->getParameters().innerRing / radius,
-			                 drawnBody->getParameters().outerRing / radius);
-		}
+		planet->initRing(innerRing / radius, outerRing / radius, rings);
 	}
 }
 

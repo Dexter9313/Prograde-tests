@@ -125,7 +125,7 @@ void Planet::updateModel(QString const& modelName)
 	loadModelParallel(modelName);
 }
 
-void Planet::updateTextureLoading()
+void Planet::updateTextureLoading(bool cancelLoading)
 {
 	if(futures.empty())
 	{
@@ -138,6 +138,19 @@ void Planet::updateTextureLoading()
 		{
 			return;
 		}
+	}
+
+	if(cancelLoading)
+	{
+		valid = true;
+		GLHandler::deletePixelBufferObject(pbos[0]);
+		if(futures.size() > 1)
+		{
+			GLHandler::deletePixelBufferObject(pbos[1]);
+		}
+		futures.resize(0);
+		futures.shrink_to_fit();
+		return;
 	}
 
 	valid = true;
@@ -467,8 +480,8 @@ void Planet::loadModelParallel(QString const& path)
 {
 	modelIsLoading = true;
 	modelFuture    = QtConcurrent::run([path, this]() {
-        return AssetLoader::loadFile(path, loadedVertices, loadedIndices,
-                                     loadedTexs);
+        return AssetLoader::loadFile(path, this->loadedVertices,
+                                     this->loadedIndices, this->loadedTexs);
     });
 }
 
@@ -485,12 +498,15 @@ void Planet::envMap(GLHandler::ShaderProgram& shader, GLHandler::Mesh& mesh,
 
 Planet::~Planet()
 {
-	GLHandler::deleteRenderTarget(cubemapDiffuse);
-	if(!valid)
+	for(auto& future : futures)
 	{
-		return;
+		future.waitForFinished();
 	}
+	updateTextureLoading(true);
+	modelFuture.waitForFinished();
+	updateModelLoading();
 
+	GLHandler::deleteRenderTarget(cubemapDiffuse);
 	if(normal)
 	{
 		GLHandler::deleteRenderTarget(cubemapNormal);

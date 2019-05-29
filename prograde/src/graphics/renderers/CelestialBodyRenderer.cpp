@@ -18,8 +18,10 @@
 #include "../../../include/graphics/renderers/CelestialBodyRenderer.hpp"
 
 CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
+                                             double centralBodyRadius,
                                              std::string const& name)
     : drawnBody(drawnBody)
+    , centralBodyRadius(centralBodyRadius)
     , boundingSphere(drawnBody->getParameters().radius)
     , pointShader(GLHandler::newShader("colored"))
     , pointMesh(GLHandler::newMesh())
@@ -97,6 +99,7 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 	}
 
 	apparentAngle = 2.0 * atan(drawnBody->getParameters().radius / camDist);
+	// apparentAngle = 0.003f;
 
 	model = QMatrix4x4();
 	model.translate(Utils::toQt(scale * camRelPos));
@@ -124,10 +127,21 @@ void CelestialBodyRenderer::updateMesh(UniversalTime uT, Camera const& camera)
 		return;
 	}
 
-	Vector3 bodyCenter(scale * camRelPos);
-	Vector3 centralBodyCenter(-1 * scale * camera.getAbsolutePosition());
+	Vector3 centralBodyCenter(-1.0 * camera.getAbsolutePosition());
 
-	lightpos = Utils::toQt(centralBodyCenter - bodyCenter);
+	lightpos = Utils::toQt(centralBodyCenter - camRelPos);
+
+	lightradius = centralBodyRadius;
+	if(customModel)
+	{
+		lightpos /= drawnBody->getParameters().radius / 1000.f;
+		lightradius /= drawnBody->getParameters().radius / 1000.f;
+	}
+	else
+	{
+		lightpos /= drawnBody->getParameters().radius;
+		lightradius /= drawnBody->getParameters().radius;
+	}
 
 	unsigned int i(0);
 
@@ -227,6 +241,7 @@ void CelestialBodyRenderer::render()
 	if(apparentAngle < 0.005 || planet == nullptr || !planet->isValid())
 	{
 		GLHandler::setShaderParam(unloadedShader, "lightpos", lightpos);
+		GLHandler::setShaderParam(unloadedShader, "lightradius", lightradius);
 		GLHandler::setShaderParam(unloadedShader, "neighborsPosRadius", 5,
 		                          &(neighborsPosRadius[0]));
 		GLHandler::setShaderParam(unloadedShader, "neighborsOblateness", 5,
@@ -238,8 +253,8 @@ void CelestialBodyRenderer::render()
 		return;
 	}
 
-	planet->render(model, lightpos, neighborsPosRadius, neighborsOblateness,
-	               properRotation, customModel);
+	planet->render(model, lightpos, lightradius, neighborsPosRadius,
+	               neighborsOblateness, properRotation, customModel);
 }
 
 CelestialBodyRenderer::~CelestialBodyRenderer()

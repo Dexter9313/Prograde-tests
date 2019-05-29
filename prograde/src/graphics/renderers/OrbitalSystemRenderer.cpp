@@ -30,8 +30,8 @@ OrbitalSystemRenderer::OrbitalSystemRenderer(OrbitalSystem* drawnSystem)
 
 	for(std::string name : drawnSystem->getAllCelestialBodiesNames())
 	{
-		bodyRenderers.push_back(
-		    new CelestialBodyRenderer((*drawnSystem)[name], name));
+		bodyRenderers.push_back(new CelestialBodyRenderer(
+		    (*drawnSystem)[name], drawnSystem->getCentralRadius(), name));
 	}
 }
 

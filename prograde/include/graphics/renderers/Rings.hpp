@@ -29,6 +29,7 @@ class Rings
 	GLHandler::Texture getTexture();
 	void update();
 	void render(QMatrix4x4 const& model, QVector3D const& lightpos,
+	            float lightradius,
 	            std::array<QVector4D, 5> const& neighborsPosRadius,
 	            std::array<QVector3D, 5> const& neighborsOblateness,
 	            QMatrix4x4 const& properRotation);

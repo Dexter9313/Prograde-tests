@@ -110,11 +110,13 @@ void Rings::update()
 }
 
 void Rings::render(QMatrix4x4 const& model, QVector3D const& lightpos,
+                   float lightradius,
                    std::array<QVector4D, 5> const& neighborsPosRadius,
                    std::array<QVector3D, 5> const& neighborsOblateness,
                    QMatrix4x4 const& properRotation)
 {
 	GLHandler::setShaderParam(shader, "lightpos", lightpos);
+	GLHandler::setShaderParam(shader, "lightradius", lightradius);
 	GLHandler::setShaderParam(shader, "neighborsPosRadius", 5,
 	                          &(neighborsPosRadius[0]));
 	GLHandler::setShaderParam(shader, "neighborsOblateness", 5,

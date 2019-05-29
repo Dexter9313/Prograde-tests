@@ -33,7 +33,8 @@
 class CelestialBodyRenderer //: public Renderer
 {
   public:
-	CelestialBodyRenderer(CelestialBody* drawnBody, std::string const& name);
+	CelestialBodyRenderer(CelestialBody* drawnBody, double centralBodyRadius,
+	                      std::string const& name);
 	void updateMesh(UniversalTime uT, Camera const& camera);
 	void render();
 	CelestialBody const* getDrawnBody() const { return drawnBody; };
@@ -48,6 +49,7 @@ class CelestialBodyRenderer //: public Renderer
 	void unloadPlanet();
 
 	CelestialBody* drawnBody;
+	const double centralBodyRadius;
 	float centerPosition;
 	int shaderParametersId;
 
@@ -62,6 +64,7 @@ class CelestialBodyRenderer //: public Renderer
 	Planet* planet   = nullptr;
 	bool customModel = false;
 	QVector3D lightpos;
+	float lightradius;
 	QMatrix4x4 baseRotation;   // only align axis, no sideral time
 	QMatrix4x4 properRotation; // full rotation, sideral time included
 	std::array<QVector4D, 5>

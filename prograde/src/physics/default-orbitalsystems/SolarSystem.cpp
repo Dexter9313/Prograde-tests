@@ -17,11 +17,12 @@
 */
 #include "../../../include/physics/default-orbitalsystems/SolarSystem.hpp"
 
-float sunMass   = 1.9891f * 1e30;
-float sunRadius = 696342.f * 1000;
+double sunMass            = 1.9891f * 1e30;
+double sunRadius          = 696342.f * 1000;
+double solDeclinationTilt = 23.4392811 * constant::pi / 180.0;
 
 SolarSystem::SolarSystem()
-    : OrbitalSystem(sunMass, sunRadius)
+    : OrbitalSystem(sunMass, sunRadius, solDeclinationTilt)
 {
 	progress = new QProgressDialog(QObject::tr("Loading Solar System..."),
 	                               QString(), 0, bodiesNb);

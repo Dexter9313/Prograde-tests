@@ -30,11 +30,13 @@ class OrbitalSystem
 {
   public:
 	OrbitalSystem(QJsonObject const& json);
-	OrbitalSystem(double centralMass, double centralRadius);
+	OrbitalSystem(double centralMass, double centralRadius,
+	              double declinationTilt);
 	OrbitalSystem(OrbitalSystem const&) = delete;
 	OrbitalSystem& operator=(OrbitalSystem const&) = delete;
 	double getCentralMass() const { return centralMass; };
 	double getCentralRadius() const { return centralRadius; };
+	double getDeclinationTilt() const { return declinationTilt; };
 	void createChild(std::string const& name, QJsonObject const& json,
 	                 std::string const& parent = "");
 	void createChild(std::string const& name,
@@ -56,6 +58,7 @@ class OrbitalSystem
   private:
 	double centralMass;
 	double centralRadius;
+	float declinationTilt;
 
 	std::map<std::string, CelestialBody*> bodies;
 

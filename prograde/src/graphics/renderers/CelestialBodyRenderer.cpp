@@ -19,9 +19,11 @@
 
 CelestialBodyRenderer::CelestialBodyRenderer(CelestialBody* drawnBody,
                                              double centralBodyRadius,
+                                             double declinationTilt,
                                              std::string const& name)
     : drawnBody(drawnBody)
     , centralBodyRadius(centralBodyRadius)
+    , declinationTilt(declinationTilt)
     , boundingSphere(drawnBody->getParameters().radius)
     , pointShader(GLHandler::newShader("colored"))
     , pointMesh(GLHandler::newMesh())

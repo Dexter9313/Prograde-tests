@@ -20,8 +20,9 @@
 
 OrbitalSystem::OrbitalSystem(QJsonObject const& json)
 {
-	centralMass   = json["centralMass"].toDouble();
-	centralRadius = json["centralRadius"].toDouble();
+	centralMass     = json["centralMass"].toDouble();
+	centralRadius   = json["centralRadius"].toDouble();
+	declinationTilt = json["declinationTilt"].toDouble();
 
 	QJsonObject jb(json["bodies"].toObject());
 
@@ -35,9 +36,11 @@ OrbitalSystem::OrbitalSystem(QJsonObject const& json)
 	delete progress;
 }
 
-OrbitalSystem::OrbitalSystem(double centralMass, double centralRadius)
+OrbitalSystem::OrbitalSystem(double centralMass, double centralRadius,
+                             double declinationTilt)
     : centralMass(centralMass)
     , centralRadius(centralRadius)
+    , declinationTilt(declinationTilt)
 {
 }
 
@@ -155,8 +158,9 @@ std::vector<CelestialBody*>
 QJsonObject OrbitalSystem::getJSONRepresentation() const
 {
 	QJsonObject result;
-	result["centralMass"]   = centralMass;
-	result["centralRadius"] = centralRadius;
+	result["centralMass"]     = centralMass;
+	result["centralRadius"]   = centralRadius;
+	result["declinationTilt"] = declinationTilt;
 
 	QJsonObject bodiesJSON;
 	for(auto& pair : bodies)

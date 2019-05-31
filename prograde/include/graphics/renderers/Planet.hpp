@@ -59,6 +59,7 @@ class Planet
 	            std::array<QVector3D, 5> const& neighborsOblateness,
 	            QMatrix4x4 const& properRotation, bool flipCoords = false);
 	bool isValid() const { return valid && !modelIsLoading; };
+	bool isLoading() const { return modelIsLoading || !futures.empty(); };
 	~Planet();
 
   private:

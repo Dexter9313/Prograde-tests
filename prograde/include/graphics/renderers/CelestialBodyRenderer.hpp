@@ -46,7 +46,7 @@ class CelestialBodyRenderer //: public Renderer
 
   private:
 	void loadPlanet();
-	void unloadPlanet();
+	void unloadPlanet(bool waitIfPlanetNotLoaded = false);
 
 	CelestialBody* drawnBody;
 	const double centralBodyRadius;

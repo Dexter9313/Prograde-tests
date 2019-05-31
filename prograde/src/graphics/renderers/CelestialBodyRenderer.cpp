@@ -263,7 +263,7 @@ CelestialBodyRenderer::~CelestialBodyRenderer()
 	GLHandler::deleteShader(pointShader);
 	GLHandler::deleteMesh(unloadedMesh);
 	GLHandler::deleteShader(unloadedShader);
-	unloadPlanet();
+	unloadPlanet(true);
 }
 
 void CelestialBodyRenderer::loadPlanet()
@@ -357,12 +357,20 @@ void CelestialBodyRenderer::loadPlanet()
 	}
 }
 
-void CelestialBodyRenderer::unloadPlanet()
+void CelestialBodyRenderer::unloadPlanet(bool waitIfPlanetNotLoaded)
 {
 	if(planet == nullptr)
 	{
 		return;
 	}
+
+	if(planet->isLoading() && !waitIfPlanetNotLoaded)
+	{
+		planet->updateTextureLoading();
+		planet->updateModelLoading();
+		return;
+	}
+
 	delete planet;
 	planet = nullptr;
 }

@@ -16,7 +16,8 @@ uniform vec3 neighborsOblateness[5];
 
 out vec4 outColor;
 
-// Disk on disk occlusion proportion (see notes/disk-occlusion.ggb in Geogebra geometry)
+// Disk on disk occlusion proportion (see notes/disk-occlusion.ggb in Geogebra
+// geometry)
 float getNeighborOcclusionFactor(float rLight, float rNeighbor, float dist)
 {
 	// both disks don't meet
@@ -87,10 +88,13 @@ void main()
 
 	closestPoint /= planetoblateness;
 
-	float coeff = 1.0
-	              - getNeighborOcclusionFactor(
-	                    lightradius * length(pos) / length(posRelToLight),
-	                    planetradius, length(closestPoint));
+	float coeff = 1.0;
+	if(dot(lightdir, pos) < 0.0)
+	{
+		coeff -= getNeighborOcclusionFactor(lightradius * length(pos)
+		                                        / length(posRelToLight),
+		                                    planetradius, length(closestPoint));
+	}
 
 	// NEIGHBORS
 	float globalCoeffNeighbor = 1.0;

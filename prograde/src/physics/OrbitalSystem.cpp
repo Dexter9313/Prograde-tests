@@ -28,7 +28,7 @@ OrbitalSystem::OrbitalSystem(QJsonObject const& json)
 	current  = 0;
 	progress = new QProgressDialog(QObject::tr("Loading System..."), QString(),
 	                               0, jb.size());
-	while(jb.size() > 0)
+	while(!jb.empty())
 	{
 		loadChildFromJSON(jb.begin().key(), jb);
 	}

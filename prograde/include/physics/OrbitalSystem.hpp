@@ -63,7 +63,6 @@ class OrbitalSystem
 	unsigned int current;
 	QProgressDialog* progress;
 	void loadChildFromJSON(QString const& name, QJsonObject& json);
-
 };
 
 #endif // ORBITALSYSTEM_HPP

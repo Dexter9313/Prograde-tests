@@ -18,6 +18,21 @@
 
 #include "physics/Orbit.hpp"
 
+Orbit::Orbit(QJsonObject const& json)
+    : massiveBodyMass(json["massiveBodyMass"].toDouble())
+{
+	QJsonObject paramsJSON(json["parameters"].toObject());
+	parameters.inclination = paramsJSON["inclination"].toDouble();
+	parameters.ascendingNodeLongitude
+	    = paramsJSON["ascendingNodeLongitude"].toDouble();
+	parameters.periapsisArgument  = paramsJSON["periapsisArgument"].toDouble();
+	parameters.eccentricity       = paramsJSON["eccentricity"].toDouble();
+	parameters.semiMajorAxis      = paramsJSON["semiMajorAxis"].toDouble();
+	parameters.meanAnomalyAtEpoch = paramsJSON["meanAnomalyAtEpoch"].toDouble();
+
+	updatePeriod();
+}
+
 Orbit::Orbit(MassiveBodyMass const& massiveBodyMass,
              Orbit::Parameters parameters)
     : parameters(parameters)
@@ -187,6 +202,25 @@ std::ostream& Orbit::displayAsText(std::ostream& stream) const
 	stream << period << std::endl;
 
 	return stream;
+}
+
+QJsonObject Orbit::getJSONRepresentation() const
+{
+	QJsonObject result;
+	result["massiveBodyMass"] = massiveBodyMass;
+
+	QJsonObject parametersResult;
+	parametersResult["inclination"] = parameters.inclination;
+	parametersResult["ascendingNodeLongitude"]
+	    = parameters.ascendingNodeLongitude;
+	parametersResult["periapsisArgument"]  = parameters.periapsisArgument;
+	parametersResult["eccentricity"]       = parameters.eccentricity;
+	parametersResult["semiMajorAxis"]      = parameters.semiMajorAxis;
+	parametersResult["meanAnomalyAtEpoch"] = parameters.meanAnomalyAtEpoch;
+
+	result["parameters"] = parametersResult;
+
+	return result;
 }
 
 void Orbit::updatePeriod()

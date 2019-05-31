@@ -18,6 +18,63 @@
 
 #include "../../include/physics/CelestialBody.hpp"
 
+CelestialBody::CelestialBody(QJsonObject const& json,
+                             std::string const& ownName,
+                             double influentBodyMass)
+    : parent(nullptr)
+{
+	if(json.contains("orbit"))
+	{
+		orbit = new Orbit(json["orbit"].toObject());
+	}
+	else
+	{
+		orbit = new CSVOrbit(Orbit::MassiveBodyMass(influentBodyMass), ownName);
+	}
+	QJsonObject jp(json["parameters"].toObject());
+	parameters.type       = strToType(jp["type"].toString().toStdString());
+	parameters.mass       = jp["mass"].toDouble();
+	parameters.radius     = jp["radius"].toDouble();
+	parameters.oblateness = jsonToVector3(jp["oblateness"].toObject());
+	parameters.color      = jsonToColor(jp["color"].toObject());
+	parameters.atmosphere = jp["atmosphere"].toDouble();
+	parameters.innerRing  = jp["innerRing"].toDouble();
+	parameters.outerRing  = jp["outerRing"].toDouble();
+	parameters.siderealTimeAtEpoch    = jp["siderealTimeAtEpoch"].toDouble();
+	parameters.siderealRotationPeriod = jp["siderealRotationPeriod"].toDouble();
+	parameters.northPoleRightAsc      = jp["northPoleRightAsc"].toDouble();
+	parameters.northPoleDeclination   = jp["northPoleDeclination"].toDouble();
+}
+
+CelestialBody::CelestialBody(QJsonObject const& json,
+                             std::string const& ownName,
+                             CelestialBody const& parent)
+    : parent(&parent)
+{
+	if(json.contains("orbit"))
+	{
+		orbit = new Orbit(json["orbit"].toObject());
+	}
+	else
+	{
+		orbit = new CSVOrbit(
+		    Orbit::MassiveBodyMass(parent.getParameters().mass), ownName);
+	}
+	QJsonObject jp(json["parameters"].toObject());
+	parameters.type       = strToType(jp["type"].toString().toStdString());
+	parameters.mass       = jp["mass"].toDouble();
+	parameters.radius     = jp["radius"].toDouble();
+	parameters.oblateness = jsonToVector3(jp["oblateness"].toObject());
+	parameters.color      = jsonToColor(jp["color"].toObject());
+	parameters.atmosphere = jp["atmosphere"].toDouble();
+	parameters.innerRing  = jp["innerRing"].toDouble();
+	parameters.outerRing  = jp["outerRing"].toDouble();
+	parameters.siderealTimeAtEpoch    = jp["siderealTimeAtEpoch"].toDouble();
+	parameters.siderealRotationPeriod = jp["siderealRotationPeriod"].toDouble();
+	parameters.northPoleRightAsc      = jp["northPoleRightAsc"].toDouble();
+	parameters.northPoleDeclination   = jp["northPoleDeclination"].toDouble();
+}
+
 CelestialBody::CelestialBody(double influentBodyMass,
                              Orbit::Parameters orbitalParams,
                              Parameters physicalParams)
@@ -64,6 +121,14 @@ CelestialBody const* CelestialBody::getParent() const
 std::vector<CelestialBody*> const& CelestialBody::getChildren() const
 {
 	return children;
+}
+
+CelestialBody* CelestialBody::createChild(QJsonObject const& json,
+                                          std::string const& childName)
+{
+	auto newChild = new CelestialBody(json, childName, *this);
+	children.push_back(newChild);
+	return newChild;
 }
 
 CelestialBody*
@@ -247,4 +312,86 @@ Vector3 CelestialBody::getRelativePositionAtUt(CelestialBody const* from,
 	}
 
 	return toAbsolute - fromAbsolute;
+}
+
+QJsonObject CelestialBody::getJSONRepresentation() const
+{
+	QJsonObject result;
+
+	if(!orbit->isLoadedFromFile())
+	{
+		result["orbit"] = orbit->getJSONRepresentation();
+	}
+
+	QJsonObject parametersResult;
+	parametersResult["type"]       = typeToStr(parameters.type).c_str();
+	parametersResult["mass"]       = parameters.mass;
+	parametersResult["radius"]     = parameters.radius;
+	parametersResult["oblateness"] = vector3ToJSON(parameters.oblateness);
+	parametersResult["color"]      = colorToJSON(parameters.color);
+	parametersResult["atmosphere"] = parameters.atmosphere;
+	parametersResult["innerRing"]  = parameters.innerRing;
+	parametersResult["outerRing"]  = parameters.outerRing;
+	parametersResult["siderealTimeAtEpoch"] = parameters.siderealTimeAtEpoch;
+	parametersResult["siderealRotationPeriod"]
+	    = parameters.siderealRotationPeriod;
+	parametersResult["northPoleRightAsc"]    = parameters.northPoleRightAsc;
+	parametersResult["northPoleDeclination"] = parameters.northPoleDeclination;
+
+	result["parameters"] = parametersResult;
+
+	return result;
+}
+
+std::string CelestialBody::typeToStr(Type type)
+{
+	switch(type)
+	{
+		case Type::GAZGIANT:
+			return "gazgiant";
+		case Type::TERRESTRIAL:
+			return "terrestrial";
+		default:
+			return "generic";
+	}
+}
+
+CelestialBody::Type CelestialBody::strToType(std::string const& str)
+{
+	if(str == "gazgiant")
+	{
+		return Type::GAZGIANT;
+	}
+
+	if(str == "terrestrial")
+	{
+		return Type::TERRESTRIAL;
+	}
+
+	return Type::GENERIC;
+}
+
+QJsonObject CelestialBody::vector3ToJSON(Vector3 const& v)
+{
+	return QJsonObject({{"x", v[0]}, {"y", v[1]}, {"z", v[2]}});
+}
+
+Vector3 CelestialBody::jsonToVector3(QJsonObject const& obj)
+{
+	return Vector3(obj["x"].toDouble(), obj["y"].toDouble(),
+	               obj["z"].toDouble());
+}
+
+QJsonObject CelestialBody::colorToJSON(Color const& c)
+{
+	return QJsonObject({{"r", static_cast<int>(c.r)},
+	                    {"g", static_cast<int>(c.g)},
+	                    {"b", static_cast<int>(c.b)},
+	                    {"alpha", static_cast<int>(c.alpha)}});
+}
+
+Color CelestialBody::jsonToColor(QJsonObject const& obj)
+{
+	return Color(obj["alpha"].toInt(), obj["r"].toInt(), obj["g"].toInt(),
+	             obj["b"].toInt());
 }

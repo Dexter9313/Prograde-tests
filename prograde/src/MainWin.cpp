@@ -3,6 +3,21 @@
 MainWin::MainWin()
     : AbstractMainWin()
 {
+	QFile jsonFile(QSettings().value("simulation/planetsystemdir").toString()
+	               + "/definition.json");
+	if(jsonFile.exists())
+	{
+		jsonFile.open(QIODevice::ReadOnly);
+		QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonFile.readAll());
+		orbitalSystem         = new OrbitalSystem(jsonDoc.object());
+	}
+	else
+	{
+		QMessageBox::critical(nullptr, tr("Invalid data directory"),
+		                      tr("The planetary system root directory doesn't "
+		                         "contain any definition.json file."));
+		exit(EXIT_FAILURE);
+	}
 }
 
 void MainWin::keyPressEvent(QKeyEvent* e)

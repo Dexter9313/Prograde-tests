@@ -31,6 +31,7 @@ class CSVOrbit : public Orbit
   public:
 	CSVOrbit(MassiveBodyMass const& massiveBodyMass,
 	         std::string const& bodyName);
+	virtual bool isLoadedFromFile() const override { return true; };
 	virtual void updateParameters(UniversalTime uT) override;
 	virtual double getMeanAnomalyAtUT(UniversalTime uT) override
 	{

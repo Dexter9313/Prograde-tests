@@ -19,6 +19,7 @@
 #ifndef CELESTIALBODY_HPP
 #define CELESTIALBODY_HPP
 
+#include <QJsonObject>
 #include <cmath>
 #include <vector>
 
@@ -56,6 +57,11 @@ class CelestialBody
 		float northPoleDeclination = constant::pi / 2.0; // in rad
 	};
 
+	CelestialBody(QJsonObject const& json, std::string const& ownName,
+	              double influentBodyMass);
+	CelestialBody(QJsonObject const& json, std::string const& ownName,
+	              CelestialBody const& parent);
+
 	CelestialBody(double influentBodyMass, Orbit::Parameters orbitalParams,
 	              Parameters physicalParams);
 	CelestialBody(CelestialBody const& parent,
@@ -68,6 +74,8 @@ class CelestialBody
 	CelestialBody(CelestialBody const& copiedBody) = default;
 	CelestialBody const* getParent() const;
 	std::vector<CelestialBody*> const& getChildren() const;
+	CelestialBody* createChild(QJsonObject const& json,
+	                           std::string const& childName);
 	CelestialBody* createChild(Orbit::Parameters const& orbitalParams,
 	                           Parameters const& physicalParams);
 	CelestialBody* createChild(std::string const& childName,
@@ -87,12 +95,20 @@ class CelestialBody
 	static Vector3 getRelativePositionAtUt(CelestialBody const* from,
 	                                       CelestialBody const* to,
 	                                       UniversalTime uT);
+	QJsonObject getJSONRepresentation() const;
 
   private:
 	CelestialBody const* parent;
 	std::vector<CelestialBody*> children;
 	Orbit* orbit;
 	Parameters parameters;
+
+	static std::string typeToStr(Type type);
+	static Type strToType(std::string const& str);
+	static QJsonObject vector3ToJSON(Vector3 const& v);
+	static Vector3 jsonToVector3(QJsonObject const& obj);
+	static QJsonObject colorToJSON(Color const& c);
+	static Color jsonToColor(QJsonObject const& obj);
 };
 
 #endif // CELESTIALBODY_HPP

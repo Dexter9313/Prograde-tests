@@ -19,6 +19,7 @@
 #ifndef ORBIT_HPP
 #define ORBIT_HPP
 
+#include <QJsonObject>
 #include <cmath>
 #include <iostream>
 
@@ -57,9 +58,11 @@ class Orbit
 
   public:
 	Orbit() = delete;
+	Orbit(QJsonObject const& json);
 	Orbit(MassiveBodyMass const& massiveBodyMass, Parameters parameters);
 	Orbit(Period const& period, Parameters parameters);
 	Orbit(Orbit const& copiedOrbit) = default;
+	virtual bool isLoadedFromFile() const { return false; };
 	virtual void updateParameters(UniversalTime uT) { (void) uT; };
 	double getMassiveBodyMass() const;
 	Parameters getParameters() const;
@@ -72,6 +75,7 @@ class Orbit
 	// Vector3 getVelocityAtUT(UniversalTime uT) const;
 	CoordinateSystem getRelativeCoordinateSystemAtUT(UniversalTime uT);
 	std::ostream& displayAsText(std::ostream& stream) const;
+	QJsonObject getJSONRepresentation() const;
 	virtual ~Orbit(){};
 
   protected:

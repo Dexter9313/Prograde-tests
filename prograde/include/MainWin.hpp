@@ -2,6 +2,7 @@
 #define MAINWIN_H
 
 #include <QDateTime>
+#include <QMessageBox>
 
 #include "AbstractMainWin.hpp"
 
@@ -57,9 +58,7 @@ class MainWin : public AbstractMainWin
 	static void computeDayMonth(unsigned int* day, unsigned int* month,
 	                            bool bissextile);
 
-	// temp
-	// OrbitalSystem* orbitalSystem = new KerbalSystem;
-	OrbitalSystem* orbitalSystem = new SolarSystem;
+	OrbitalSystem* orbitalSystem;
 	OrbitalSystemRenderer* systemRenderer;
 
 	// SimulationTime clock = SimulationTime(0);

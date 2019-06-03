@@ -23,6 +23,14 @@
 double EccentricAnomalySolver::solveForEllipticOrbit(double meanAnomaly,
                                                      double eccentricity)
 {
+	while(meanAnomaly > 2.0 * constant::pi)
+	{
+		meanAnomaly -= 2.0 * constant::pi;
+	}
+	while(meanAnomaly < 0.0)
+	{
+		meanAnomaly += 2.0 * constant::pi;
+	}
 	double guess((eccentricity < 0.8 ? meanAnomaly : constant::pi));
 	boost::uintmax_t maxit = 100;
 
@@ -40,11 +48,18 @@ double EccentricAnomalySolver::solveForParabolicOrbit(double meanAnomaly)
 {
 	// solves D^3+3D-6M = 0
 	// Solving using Cardano's method (and the fact that there will always be
-	// one
-	// single real root)
+	// one single real root)
 	// (french source, hope it's understandable anyway, better source needed,
 	// I don't find the english version is as clear in Wikipedia)
 	// https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Cardan#Si_.CE.94_est_n.C3.A9gatif
+	while(meanAnomaly > 2.0 * constant::pi)
+	{
+		meanAnomaly -= 2.0 * constant::pi;
+	}
+	while(meanAnomaly < 0.0)
+	{
+		meanAnomaly += 2.0 * constant::pi;
+	}
 	double p(3), q(-6 * meanAnomaly);
 	double term(sqrt(q * q / 4.0 + p * p * p / 27.0));
 	return cbrt(-q / 2.0 + term) + cbrt(-q / 2.0 - term);
@@ -55,6 +70,14 @@ double EccentricAnomalySolver::solveForParabolicOrbit(double meanAnomaly)
 double EccentricAnomalySolver::solveForHyperbolicOrbit(double meanAnomaly,
                                                        double eccentricity)
 {
+	while(meanAnomaly > 2.0 * constant::pi)
+	{
+		meanAnomaly -= 2.0 * constant::pi;
+	}
+	while(meanAnomaly < 0.0)
+	{
+		meanAnomaly += 2.0 * constant::pi;
+	}
 	double guess(constant::pi);
 	boost::uintmax_t maxit = 100;
 

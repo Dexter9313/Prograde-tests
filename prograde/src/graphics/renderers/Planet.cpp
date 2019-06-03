@@ -35,10 +35,10 @@ Planet::Planet(float radius, QVector3D const& oblateness)
 void Planet::initTerrestrial(QColor const& color, float polarLatitude,
                              float atmosphere)
 {
-	valid  = true;
-	shader = GLHandler::newShader("planet/planet", "planet/diffnormplanet");
-	mesh   = Primitives::newUnitSphere(shader, 50, 50);
-	normal = true;
+	valid         = true;
+	shader        = GLHandler::newShader("planet/planet", {{"NORMAL", ""}});
+	mesh          = Primitives::newUnitSphere(shader, 50, 50);
+	normal        = true;
 	cubemapNormal = GLHandler::newRenderTarget(cubemapsSize(), cubemapsSize(),
 	                                           GL_RGBA16F, true);
 
@@ -79,7 +79,7 @@ void Planet::initGazGiant(QColor const& color, float bandsIntensity,
                           float stormsIntensity)
 {
 	valid  = true;
-	shader = GLHandler::newShader("planet/planet", "planet/diffplanet");
+	shader = GLHandler::newShader("planet/planet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 
 	GLHandler::setShaderParam(shader, "diff", 0);
@@ -103,7 +103,7 @@ void Planet::initGazGiant(QColor const& color, float bandsIntensity,
 
 void Planet::initFromTex(QString const& diffusePath)
 {
-	shader = GLHandler::newShader("planet/planet", "planet/diffplanet");
+	shader = GLHandler::newShader("planet/planet");
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 
 	loadParallel(diffusePath, 0);
@@ -112,7 +112,7 @@ void Planet::initFromTex(QString const& diffusePath)
 void Planet::initFromTex(QString const& diffusePath, QString const& normalPath,
                          float atmosphere)
 {
-	shader = GLHandler::newShader("planet/planet", "planet/diffnormplanet");
+	shader = GLHandler::newShader("planet/planet", {{"NORMAL", ""}});
 	mesh   = Primitives::newUnitSphere(shader, 50, 50);
 
 	loadParallel(diffusePath, 0);

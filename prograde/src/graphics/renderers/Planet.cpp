@@ -143,11 +143,11 @@ void Planet::updateTextureLoading(bool cancelLoading)
 	if(cancelLoading)
 	{
 		valid = true;
-		GLHandler::deletePixelBufferObject(pbos[0]);
+		/*GLHandler::deletePixelBufferObject(pbos[0]);
 		if(futures.size() > 1)
 		{
 			GLHandler::deletePixelBufferObject(pbos[1]);
-		}
+		}*/
 		futures.resize(0);
 		futures.shrink_to_fit();
 		return;
@@ -163,7 +163,7 @@ void Planet::updateTextureLoading(bool cancelLoading)
 	GLHandler::Mesh mdiff = Primitives::newUnitSphere(sdiff, 50, 50);
 
 	GLHandler::Texture tdiff = GLHandler::copyPBOToTex(pbos[0]);
-	GLHandler::deletePixelBufferObject(pbos[0]);
+	//GLHandler::deletePixelBufferObject(pbos[0]);
 
 	GLHandler::useTextures({tdiff});
 	envMap(sdiff, mdiff, cubemapDiffuse);
@@ -184,7 +184,7 @@ void Planet::updateTextureLoading(bool cancelLoading)
 		GLHandler::Mesh mnorm = Primitives::newUnitSphere(snorm, 50, 50);
 
 		GLHandler::Texture tnorm = GLHandler::copyPBOToTex(pbos[1], false);
-		GLHandler::deletePixelBufferObject(pbos[1]);
+		//GLHandler::deletePixelBufferObject(pbos[1]);
 
 		GLHandler::useTextures({tnorm});
 		envMap(snorm, mnorm, cubemapNormal);
@@ -370,8 +370,10 @@ Planet::~Planet()
 	updateModelLoading();
 
 	GLHandler::deleteRenderTarget(cubemapDiffuse);
+	GLHandler::deletePixelBufferObject(pbos[0]);
 	if(normal)
 	{
+		GLHandler::deletePixelBufferObject(pbos[1]);
 		GLHandler::deleteRenderTarget(cubemapNormal);
 	}
 

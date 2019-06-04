@@ -22,7 +22,7 @@ install:
     - set Path=%QTPATH%;%QTPATH%/bin;%INNOSETUPPATH%;%PATH%
 
     - cd %APPVEYOR_BUILD_FOLDER%
-    - for /f "delims=" %%x in (build.conf) do (set "%%x")
+    - for /f "delims=" %x in (build.conf) do (set "%x")
     - IF NOT EXIST deps\ ( mkdir deps )
     - cd deps
     ############################################################################
